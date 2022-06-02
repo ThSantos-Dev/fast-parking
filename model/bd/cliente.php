@@ -9,7 +9,11 @@
 // Import do arquivo responsável pela Conexão do BD 
 require_once('conexaoMySQL.php');
 
-// Função responsável por inserir um cliente
+/** Função responsável por inserir um cliente
+ * @author Thales Santos.
+ * @param Array $dados Informações do cliente (nome e telefone).
+ * @return Int Se der certo retorna o Id do cliente, senao, false.
+ */
 function insertCliente($dados) {
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
@@ -25,6 +29,7 @@ function insertCliente($dados) {
     if(mysqli_query($conexao, $sql)) {
         // Validação para verificar se uma linha foi afetada no BD
         if(mysqli_affected_rows($conexao))
+            // Resgatando o id do cliente
             $idCliente = mysqli_insert_id($conexao);
     }
 
