@@ -12,7 +12,7 @@ require_once('conexaoMySQL.php');
 /** Função responsável por inserir um cliente
  * @author Thales Santos.
  * @param Array $dados Informações do cliente (nome e telefone).
- * @return Int Se der certo retorna o Id do cliente, senao, false.
+ * @return Int Se der certo retorna o Id do cliente, senão, false.
  */
 function insertCliente($dados) {
     // Abrindo conexão com o BD

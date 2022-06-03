@@ -54,6 +54,7 @@ function insertMovimentacao($dados)
 
 /**
  * Função reponsável por apagar uma Moviementação
+ * @author Thales Santos 
  * @param Int ID da movimentação 
  * @return Bool True se foi apagado, senão, false.
  */
@@ -99,7 +100,8 @@ function updateMovimentacao($dados){
     // Script SQL para atualizar o registro da movimentação
     $sql = "UPDATE tblMovimentacao SET 
                 dataSaida = {$dados['dataSaida']},
-                horaSaida = {$dados['horaSaida']}
+                horaSaida = {$dados['horaSaida']},
+                valor     = {$dados['valor']}
 
             WHERE id = {$dados['id']}";
 
@@ -121,6 +123,7 @@ function updateMovimentacao($dados){
 
 /**
  * Função responsável por listar todas as Movimentações 
+ * @author Thales Santos 
  * @param Void 
  * @return Array Dados encontrados no BD
  */
@@ -135,6 +138,7 @@ function selectAllMovimentacoes() {
                    tblMovimentacao.horaEntrada,
                    tblMovimentacao.dataSaida,
                    tblMovimentacao.horaSaida,
+                   tblMovimentacao.valor,
    
                    tblVeiculo.placa,
                    tblVeiculo.fabricante,
@@ -241,6 +245,7 @@ function selectAllMovimentacoes() {
 
 /**
  * Função responsável por buscar uma Moviementação por ID
+ * @author Thales Santos 
  * @param Int ID da moviementação
  * @return Array Dados encontrados na busca
  */
@@ -255,6 +260,7 @@ function selectByIdMovimentacao($id){
                 tblMovimentacao.horaEntrada,
                 tblMovimentacao.dataSaida,
                 tblMovimentacao.horaSaida,
+                tblMovimentacao.valor,
 
                 tblVeiculo.placa,
                 tblVeiculo.fabricante,
@@ -355,4 +361,3 @@ function selectByIdMovimentacao($id){
     // Retornando os dados encontrados ou false
     return isset($dados) ? $dados : false;
 }
-
