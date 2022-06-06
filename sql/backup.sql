@@ -87,7 +87,7 @@ CREATE TABLE `tblcorredor` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tblcorredor`
+-- Dumping data for table `tblcorredor` 
 --
 
 LOCK TABLES `tblcorredor` WRITE;
