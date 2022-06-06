@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `dbestacionamento` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `dbestacionamento`;
+CREATE DATABASE  IF NOT EXISTS `db_dom` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `db_dom`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
--- Host: localhost    Database: dbestacionamento
+-- Host: localhost    Database: db_dom
 -- ------------------------------------------------------
 -- Server version	8.0.20
 
@@ -18,315 +18,174 @@ USE `dbestacionamento`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tblcliente`
+-- Table structure for table `categories_archive`
 --
 
-DROP TABLE IF EXISTS `tblcliente`;
+DROP TABLE IF EXISTS `categories_archive`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblcliente` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(180) NOT NULL,
-  `telefone` varchar(22) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `categories_archive` (
+  `category_id` int NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(150) DEFAULT NULL,
+  `remarks` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tblcliente`
+-- Dumping data for table `categories_archive`
 --
 
-LOCK TABLES `tblcliente` WRITE;
-/*!40000 ALTER TABLE `tblcliente` DISABLE KEYS */;
-INSERT INTO `tblcliente` VALUES (1,'Julia','101010'),(2,'Julio','202020'),(3,'Judas','303030'),(4,'Jonas','404040'),(5,'Joana','505050'),(6,'Josi','606060');
-/*!40000 ALTER TABLE `tblcliente` ENABLE KEYS */;
+LOCK TABLES `categories_archive` WRITE;
+/*!40000 ALTER TABLE `categories_archive` DISABLE KEYS */;
+/*!40000 ALTER TABLE `categories_archive` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tblcor`
+-- Table structure for table `tbl_categorias`
 --
 
-DROP TABLE IF EXISTS `tblcor`;
+DROP TABLE IF EXISTS `tbl_categorias`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblcor` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_categorias` (
+  `id_categoria` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(80) NOT NULL,
+  PRIMARY KEY (`id_categoria`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_categorias`
+--
+
+LOCK TABLES `tbl_categorias` WRITE;
+/*!40000 ALTER TABLE `tbl_categorias` DISABLE KEYS */;
+INSERT INTO `tbl_categorias` VALUES (3,'camisetas'),(6,'blusas'),(16,'bermudas'),(17,'calças');
+/*!40000 ALTER TABLE `tbl_categorias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_contatos`
+--
+
+DROP TABLE IF EXISTS `tbl_contatos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_contatos` (
+  `id_contato` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(80) NOT NULL,
+  `telefone` varchar(18) DEFAULT NULL,
+  `email` varchar(80) NOT NULL,
+  `obs` text,
+  `atualizacoes_email` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id_contato`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tbl_contatos`
+--
+
+LOCK TABLES `tbl_contatos` WRITE;
+/*!40000 ALTER TABLE `tbl_contatos` DISABLE KEYS */;
+INSERT INTO `tbl_contatos` VALUES (2,'mel santos','11 40028922','melsantos@gmail.com','teste 02',0),(5,'thales santos','11338329','tales@email.com','asadsa  adad add ',1),(7,'rodriguin bala mansa','1140028922','rodriguintricas@hotmail.com','Ligue agora e ganhe já!',0);
+/*!40000 ALTER TABLE `tbl_contatos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tbl_imagens`
+--
+
+DROP TABLE IF EXISTS `tbl_imagens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tbl_imagens` (
+  `id_imagem` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id_produto` int NOT NULL,
+  PRIMARY KEY (`id_imagem`),
+  KEY `FK_Produtos_Imagens` (`id_produto`),
+  CONSTRAINT `FK_Produtos_Imagens` FOREIGN KEY (`id_produto`) REFERENCES `tbl_produtos` (`id_produto`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tblcor`
+-- Dumping data for table `tbl_imagens`
 --
 
-LOCK TABLES `tblcor` WRITE;
-/*!40000 ALTER TABLE `tblcor` DISABLE KEYS */;
-INSERT INTO `tblcor` VALUES (1,'Preto'),(2,'Cinza'),(3,'Branco'),(4,'Vermelho'),(5,'Marrom'),(6,'Amarelo');
-/*!40000 ALTER TABLE `tblcor` ENABLE KEYS */;
+LOCK TABLES `tbl_imagens` WRITE;
+/*!40000 ALTER TABLE `tbl_imagens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tbl_imagens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tblcorredor`
+-- Table structure for table `tbl_produtos`
 --
 
-DROP TABLE IF EXISTS `tblcorredor`;
+DROP TABLE IF EXISTS `tbl_produtos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblcorredor` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(10) NOT NULL,
-  `idSetor` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_Setor_Corredor` (`idSetor`),
-  CONSTRAINT `FK_Setor_Corredor` FOREIGN KEY (`idSetor`) REFERENCES `tblsetor` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblcorredor`
---
-
-LOCK TABLES `tblcorredor` WRITE;
-/*!40000 ALTER TABLE `tblcorredor` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblcorredor` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblmovimentacao`
---
-
-DROP TABLE IF EXISTS `tblmovimentacao`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblmovimentacao` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `dataEntrada` date NOT NULL,
-  `dataSaida` date DEFAULT NULL,
-  `horaEntrada` time NOT NULL,
-  `horaSaida` time DEFAULT NULL,
-  `idVaga` int unsigned NOT NULL,
-  `idVeiculo` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_Vaga_Movimentacao` (`idVaga`),
-  KEY `FK_Veiculo_Movimentacao` (`idVeiculo`),
-  CONSTRAINT `FK_Vaga_Movimentacao` FOREIGN KEY (`idVaga`) REFERENCES `tblvaga` (`id`),
-  CONSTRAINT `FK_Veiculo_Movimentacao` FOREIGN KEY (`idVeiculo`) REFERENCES `tblveiculo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblmovimentacao`
---
-
-LOCK TABLES `tblmovimentacao` WRITE;
-/*!40000 ALTER TABLE `tblmovimentacao` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblmovimentacao` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblpiso`
---
-
-DROP TABLE IF EXISTS `tblpiso`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblpiso` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(10) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblpiso`
---
-
-LOCK TABLES `tblpiso` WRITE;
-/*!40000 ALTER TABLE `tblpiso` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblpiso` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblpreco`
---
-
-DROP TABLE IF EXISTS `tblpreco`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblpreco` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_produtos` (
+  `id_produto` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(256) NOT NULL,
   `preco` double NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `idTipoVeiculo` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_TipoVeiculo_Preco` (`idTipoVeiculo`),
-  CONSTRAINT `FK_TipoVeiculo_Preco` FOREIGN KEY (`idTipoVeiculo`) REFERENCES `tbltipoveiculo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `quantidade` int NOT NULL,
+  `desconto` double DEFAULT NULL,
+  `destaque` tinyint DEFAULT NULL,
+  `foto_principal` varchar(45) NOT NULL,
+  `id_categoria` int NOT NULL,
+  PRIMARY KEY (`id_produto`),
+  KEY `FK_Categorias_Produtos` (`id_categoria`),
+  CONSTRAINT `FK_Categorias_Produtos` FOREIGN KEY (`id_categoria`) REFERENCES `tbl_categorias` (`id_categoria`)
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tblpreco`
+-- Dumping data for table `tbl_produtos`
 --
 
-LOCK TABLES `tblpreco` WRITE;
-/*!40000 ALTER TABLE `tblpreco` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblpreco` ENABLE KEYS */;
+LOCK TABLES `tbl_produtos` WRITE;
+/*!40000 ALTER TABLE `tbl_produtos` DISABLE KEYS */;
+INSERT INTO `tbl_produtos` VALUES (76,'ewewe',1,3,0,0,'6083de2ced9b54b88349d358a9726e0d.png',17);
+/*!40000 ALTER TABLE `tbl_produtos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `tblsetor`
+-- Table structure for table `tbl_usuarios`
 --
 
-DROP TABLE IF EXISTS `tblsetor`;
+DROP TABLE IF EXISTS `tbl_usuarios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblsetor` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(10) NOT NULL,
-  `idPiso` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_Piso_Setor` (`idPiso`),
-  CONSTRAINT `FK_Piso_Setor` FOREIGN KEY (`idPiso`) REFERENCES `tblpiso` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblsetor`
---
-
-LOCK TABLES `tblsetor` WRITE;
-/*!40000 ALTER TABLE `tblsetor` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblsetor` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblstatusvaga`
---
-
-DROP TABLE IF EXISTS `tblstatusvaga`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblstatusvaga` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblstatusvaga`
---
-
-LOCK TABLES `tblstatusvaga` WRITE;
-/*!40000 ALTER TABLE `tblstatusvaga` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblstatusvaga` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tbltipoveiculo`
---
-
-DROP TABLE IF EXISTS `tbltipoveiculo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tbltipoveiculo` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `nome` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tbltipoveiculo`
---
-
-LOCK TABLES `tbltipoveiculo` WRITE;
-/*!40000 ALTER TABLE `tbltipoveiculo` DISABLE KEYS */;
-INSERT INTO `tbltipoveiculo` VALUES (7,'moto'),(8,'carro'),(9,'ônibus'),(10,'vam'),(11,'lancha'),(12,'helicoptero');
-/*!40000 ALTER TABLE `tbltipoveiculo` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblvaga`
---
-
-DROP TABLE IF EXISTS `tblvaga`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblvaga` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(10) NOT NULL,
-  `idCorredor` int unsigned NOT NULL,
-  `idStatusVaga` int unsigned NOT NULL,
-  `idTipoVeiculo` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_Corredor_Vaga` (`idCorredor`),
-  KEY `FK_StatusVaga_Vaga` (`idStatusVaga`),
-  KEY `FK_TipoVeiculo_Vaga` (`idTipoVeiculo`),
-  CONSTRAINT `FK_Corredor_Vaga` FOREIGN KEY (`idCorredor`) REFERENCES `tblcorredor` (`id`),
-  CONSTRAINT `FK_StatusVaga_Vaga` FOREIGN KEY (`idStatusVaga`) REFERENCES `tblstatusvaga` (`id`),
-  CONSTRAINT `FK_TipoVeiculo_Vaga` FOREIGN KEY (`idTipoVeiculo`) REFERENCES `tbltipoveiculo` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tblvaga`
---
-
-LOCK TABLES `tblvaga` WRITE;
-/*!40000 ALTER TABLE `tblvaga` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tblvaga` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tblveiculo`
---
-
-DROP TABLE IF EXISTS `tblveiculo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tblveiculo` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `placa` varchar(45) NOT NULL,
-  `fabricante` varchar(80) NOT NULL,
-  `modelo` varchar(80) NOT NULL,
-  `idCor` int unsigned NOT NULL,
-  `idTipoVeiculo` int unsigned NOT NULL,
-  `idCliente` int unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id` (`id`),
-  KEY `FK_Cor_Veiculo` (`idCor`),
-  KEY `FK_TipoVeiculo_Veiculo` (`idTipoVeiculo`),
-  KEY `FK_Cliente_Veiculo` (`idCliente`),
-  CONSTRAINT `FK_Cliente_Veiculo` FOREIGN KEY (`idCliente`) REFERENCES `tblcliente` (`id`),
-  CONSTRAINT `FK_Cor_Veiculo` FOREIGN KEY (`idCor`) REFERENCES `tblcor` (`id`),
-  CONSTRAINT `FK_TipoVeiculo_Veiculo` FOREIGN KEY (`idTipoVeiculo`) REFERENCES `tbltipoveiculo` (`id`)
+CREATE TABLE `tbl_usuarios` (
+  `id_usuario` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(250) NOT NULL,
+  `telefone` varchar(18) DEFAULT NULL,
+  `email` varchar(80) NOT NULL,
+  `data_nascimento` date NOT NULL,
+  `senha` varchar(20) DEFAULT NULL,
+  `sexo` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`id_usuario`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tblveiculo`
+-- Dumping data for table `tbl_usuarios`
 --
 
-LOCK TABLES `tblveiculo` WRITE;
-/*!40000 ALTER TABLE `tblveiculo` DISABLE KEYS */;
-INSERT INTO `tblveiculo` VALUES (1,'aaa-111','ford','fordKa',4,8,3),(2,'ddd-111','ford','fordKa',6,11,6),(3,'bbb-111','honda','CB300',2,7,2),(4,'ccc-111','Kawasaki','Kawasaki',1,8,1),(5,'ccc-111','renalt','van',1,10,5);
-/*!40000 ALTER TABLE `tblveiculo` ENABLE KEYS */;
+LOCK TABLES `tbl_usuarios` WRITE;
+/*!40000 ALTER TABLE `tbl_usuarios` DISABLE KEYS */;
+INSERT INTO `tbl_usuarios` VALUES (1,'Thales Santos','(11)995234104','thales@gmail.com','2002-11-29','1234',NULL),(2,'thales','2332321','tales@email.com','2022-11-29','dasda sa',NULL),(3,'thales','2332321','tales@email.com','5155-10-15','5asda',NULL),(4,'thales','2332321','tales@email.com','2000-08-05','asdads ',NULL),(5,'sada a','11212','tales@email.com','2005-04-29','dsada asd','');
+/*!40000 ALTER TABLE `tbl_usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'dbestacionamento'
+-- Dumping events for database 'db_dom'
+--
+
+--
+-- Dumping routines for database 'db_dom'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -338,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-02 15:58:04
+-- Dump completed on 2022-06-03 12:28:37

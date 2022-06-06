@@ -1,7 +1,12 @@
-Inserção Cliente
-$dados = array(
-    "nome" => "Teste 123",
-    "telefone" => "(11) 4002-8922"
-);
+Alteração no BD, tabela de Preco
 
+rodar o script:
 
+delete from tblPreco;
+
+alter table tblPreco
+	change preco primeiraHora double not null,
+	change nome demaisHoras double not null;
+
+insert into tblPreco(primeiraHora, demaisHoras, idTipoVeiculo)
+        values(28.7, 20 , 8), (40, 30,  9),(15, 10, 7);

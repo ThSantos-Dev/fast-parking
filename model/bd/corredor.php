@@ -115,7 +115,7 @@ function updateCorredor($dados) {
  * @param Void
  * @return Array Dados encontrados
  */
-function selectAllCorredor() {
+function selectAllCorredores() {
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
 
