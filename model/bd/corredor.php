@@ -12,7 +12,7 @@ require_once('conexaoMySQL.php');
 /**
  * Função responsável por inserir novo Corredor
  * @author Thales Santos
- * @param Array $dados Informações do corredor: ID do Setor que o corredor pertencerá e nome.
+ * @param Array $dados Informações do corredor: ID do Setor que o corredor pertencerá, ativo (bool) e nome.
  * @return Bool True se foi inserido e false caso de errado.
  */
 function insertCorredor($dados) {
@@ -25,11 +25,13 @@ function insertCorredor($dados) {
     // Script SQL para inserir um novo Corredor
     $sql = "INSERT INTO tblCorredor(
                             idSetor,
-                            nome
+                            nome,
+                            ativo
                     )
                     VALUES(
                             {$dados['idSetor']},
-                            '{$dados['nome']}'
+                            '{$dados['nome']}',
+                            {$dados['ativo']}
                     )";
 
     // Validação para verificar se o Script SQL está correto
@@ -48,12 +50,12 @@ function insertCorredor($dados) {
 
 
 /**
- * Função responsável por apagar um Corredor
+ * Função responsável por inativar um Corredor
  * @author Thales Santos
- * @param Int $id Id do corredor a ser apagado
- * @return Bool True se foi apagado , senão, false.
+ * @param Int $id Id do corredor a ser inativado
+ * @return Bool True se foi  inativado, senão, false.
  */
-function deleteCorredor($id) {
+function inactivateCorredor($id) {
     // Abre a conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -61,7 +63,8 @@ function deleteCorredor($id) {
     $statusResposta = (bool) false;
 
     // Script SQL para apagar um corredor
-    $sql = "DELETE FROM tblCorredor 
+    $sql = "UPDATE tblCorredor SET
+                    ativo = 0
                 WHERE id = {$id}";
 
     // Validação para verificar se o Script SQL está correto
@@ -94,8 +97,9 @@ function updateCorredor($dados) {
     // Script SQL para atualizar um Corredor
     $sql = "UPDATE tblCorredor SET
                 idSetor = {$dados['idSetor']},
-                nome    = {$dados['nome']}
-            WHERE id    = '{$dados['id']}'";
+                nome    = '{$dados['nome']}',
+                ativo   = {$dados['ativo']}
+            WHERE id    = {$dados['id']}";
 
     // Validação para verificar se o Script SQL está correto
     if(mysqli_query($conexao, $sql)) {
@@ -120,7 +124,19 @@ function selectAllCorredores() {
     $conexao = conexaoMySQL();
 
     // Script SQL para listar todos os Corredores
-    $sql = " ";
+    $sql = "SELECT 
+                tblCorredor.id,
+                tblCorredor.nome AS codigo,
+                tblCorredor.ativo AS status,
+                
+                tblPiso.nome AS piso,
+                tblSetor.nome AS setor
+                
+                FROM tblCorredor
+                    INNER JOIN tblSetor
+                        ON tblCorredor.idSetor = tblSetor.id
+                    INNER JOIN tblPiso 
+                        ON tblSetor.idPiso = tblPiso.id";
 
     $resposta = mysqli_query($conexao, $sql);
 
@@ -133,6 +149,7 @@ function selectAllCorredores() {
             $arrayDados[$contador] = array(
                 "id"        => $resultado['id'],
                 "codigo"    => $resultado['codigo'],
+                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
 
                 "localizacao" => array(
                     "piso" => $resultado['piso'],
@@ -151,4 +168,6 @@ function selectAllCorredores() {
     return isset($arraydados) ? $arraydados : false;
 
 }
+
+
 ?>

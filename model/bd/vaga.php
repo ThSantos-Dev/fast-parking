@@ -25,13 +25,13 @@ function insertVaga($dados) {
     // Script SQL para inserir nova Vaga
     $sql = "INSERT INTO tblVaga(
                             idCorredor,
-                            idStatusVaga,
+                            ativo,
                             idTipoVeiculo,
                             codigo
                         )
                         VALUES(
                             {$dados['idCorredor']},
-                            {$dados['idStatusVaga']},
+                            {$dados['ativo']},
                             {$dados['idTipoVeiculo']},
                             {$dados['codigo']})";
 
@@ -65,7 +65,7 @@ function updateVaga($dados) {
         // Script SQL para inserir nova Vaga
         $sql = "UPDATE tblVaga SET
                     idCorredor      = {$dados['idCorredor']},
-                    idStatusVaga    = {$dados['idStatusVaga']},
+                    ativo           = {$dados['status']},
                     idTipoVeiculo   = {$dados['idTipoVeiculo']},
                     codigo          = {$dados['codigo']}
                 WHERE id = {$dados['id']}";
@@ -197,7 +197,7 @@ function selectAllVagas() {
  * Função responsável por buscar dados de uma Vaga pelo ID
  * @author Thales Santos
  * @param Int $id ID da vaga
- * @return Array Dados encontrados
+ * @return Array Dados encontrados ou false
  */
 function selectByIdVaga($id){
     // Abrindo conexão com o BD

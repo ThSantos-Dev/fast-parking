@@ -17,50 +17,50 @@ define("MESSAGES", array(
         "error"     => array(
             "IDs" => array(
                 array(
-                    "id" => 10,
+                    "idErro" => 10,
                     "message" => "O ID informado é inválido." 
                 ),
                 array(
-                    "id" => 11,
+                    "idErro" => 11,
                     "message" => "O ID informado não existe." 
                 )
             ),
 
             "Data" => array(
                 array(
-                    "id" => 20,
+                    "idErro" => 20,
                     "message" => "Não há dados a serem inseridos."
                 ),
                 array(
-                    "id" => 21,
+                    "idErro" => 21,
                     "message" => "Há campos obrigatórios que não foram preenchidos"
                 )
                 ),
 
             "Insert" => array(
                 array(
-                    "id" => 30,
+                    "idErro" => 30,
                     "message" => "Falha ao inserir os dados no banco"
                 )
             ),
 
             "Delete" => array(
                 array(
-                    "id" => 40,
+                    "idErro" => 40,
                     "message" => "Falha ao excluir o registro."
                 )
             ),
 
             "Select" => array(
                 array(
-                    "id" => 50,
+                    "idErro" => 50,
                     "message" => "Não há dados cadastrados."
                 )
             ),
 
             "Update" => array(
                 array(
-                    "id" => 60,
+                    "idErro" => 60,
                     "message" => "Falha ao atualizar o registro."
                 )
             )
@@ -72,20 +72,20 @@ define("MESSAGES", array(
         ),
         "success"   => array(
             "Insert" => array(
-                array("id" => 100, 
+                array("idErro" => 100, 
                       "message" => "Registro inserido com sucesso!"
                 ),
             ),
 
             "Update" => array(
-                array("id" => 200,
+                array("idErro" => 200,
                       "message" => "Registro atualizado com sucesso!"
                 )
             ),
 
             "Delete" => array(
                 array(
-                    "id" => 300,
+                    "idErro" => 300,
                     "message" => "Registro excluído com sucesso!"
                 )
             )
