@@ -13,7 +13,7 @@ require_once('conexaoMySQL.php');
  *   Função responsável por criar Moviementação (entrada do veículo) 
  *   @author Thales Santos 
  *   @param Array $dados Informações da movimentação 
- *                       (Data/Hora entrada, id do veículo, id do cliente).
+ *                       (id do veículo e vaga).
  *   @return Bool True se foi inserido, senão, false.
  * */
 function insertMovimentacao($dados)
@@ -32,8 +32,8 @@ function insertMovimentacao($dados)
                         idVeiculo
                     )
                     VALUES(
-                        '{$dados['dataEntrada']}',
-                        '{$dados['horaEntrada']}',
+                         curdate(),
+                         curtime(),
                          {$dados['idVaga']},
                          {$dados['idVeiculo']}
                     )";
@@ -51,6 +51,7 @@ function insertMovimentacao($dados)
     // Retornando o status da solicitação
     return $statusResposta;
 }
+
 
 /**
  * Função reponsável por apagar uma Moviementação

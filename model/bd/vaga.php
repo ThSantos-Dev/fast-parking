@@ -163,7 +163,7 @@ function selectAllVagas() {
            $contador = 0;
            while($resultado = mysqli_fetch_assoc($resposta)) {
                // Montando um array personalizado com os dados obtidos
-               $arraydados[$contador] = array(
+               $arrayDados[$contador] = array(
                    "id" => $resultado['id'],
    
                     "codigo" => $resultado['codigo'],
@@ -190,7 +190,7 @@ function selectAllVagas() {
        fecharConexaoMySQL($conexao);
    
        // Retornando os dados encontrados ou false
-       return isset($arraydados) ? $arraydados : false;
+       return isset($arrayDados) ? $arrayDados : false;
 }
 
 /**
@@ -242,7 +242,7 @@ function selectByIdVaga($id){
         // Convertendo os dados obtidos em  array
         if($resultado = mysqli_fetch_assoc($resposta)) {
             // Montando um array personalizado com os dados obtidos
-            $arraydados = array(
+            $arrayDados = array(
                 "id" => $resultado['id'],
 
                 "codigo" => $resultado['codigo'],
@@ -267,7 +267,7 @@ function selectByIdVaga($id){
     fecharConexaoMySQL($conexao);
 
     // Retornando os dados encontrados ou false
-    return isset($arraydados) ? $arraydados : false;
+    return isset($arrayDados) ? $arrayDados : false;
 
 }
 
@@ -321,7 +321,7 @@ function selectByStatusVaga($id) {
            $contador = 0;
            while($resultado = mysqli_fetch_assoc($resposta)) {
                // Montando um array personalizado com os dados obtidos
-               $arraydados[$contador] = array(
+               $arrayDados[$contador] = array(
                    "id" => $resultado['id'],
    
                     "codigo" => $resultado['codigo'],
@@ -348,7 +348,7 @@ function selectByStatusVaga($id) {
        fecharConexaoMySQL($conexao);
    
        // Retornando os dados encontrados ou false
-       return isset($arraydados) ? $arraydados : false;
+       return isset($arrayDados) ? $arrayDados : false;
 
 
 }
@@ -403,7 +403,7 @@ function selectByTipoVaga($id) {
            $contador = 0;
            while($resultado = mysqli_fetch_assoc($resposta)) {
                // Montando um array personalizado com os dados obtidos
-               $arraydados[$contador] = array(
+               $arrayDados[$contador] = array(
                    "id" => $resultado['id'],
    
                     "codigo" => $resultado['codigo'],
@@ -430,7 +430,7 @@ function selectByTipoVaga($id) {
        fecharConexaoMySQL($conexao);
    
        // Retornando os dados encontrados ou false
-       return isset($arraydados) ? $arraydados : false;
+       return isset($arrayDados) ? $arrayDados : false;
 
 
 }

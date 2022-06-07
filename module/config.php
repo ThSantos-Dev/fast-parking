@@ -8,14 +8,89 @@
 
 
 /***************************             VARIÁVEIS E CONSTANTES GLOBAIS DO PROJETO              *********************************** */
-//  Constantes para estabelecer a conexão com o BD:
-const DB_SERVER = 'localhost';
-const DB_USER = 'root';
-const DB_PASSWORD = 'bcd127';
-const DB_DATABASE = 'dbEstacionamento';
+
 
 // Caminho relativo
-define("SRC", $_SERVER['DOCUMENT_ROOT'] . '/fastparking');
+define("SRC", $_SERVER['DOCUMENT_ROOT'] . '/senai/fastparking/');
+
+define("MESSAGES", array(
+        "error"     => array(
+            "IDs" => array(
+                array(
+                    "id" => 10,
+                    "message" => "O ID informado é inválido." 
+                ),
+                array(
+                    "id" => 11,
+                    "message" => "O ID informado não existe." 
+                )
+            ),
+
+            "Data" => array(
+                array(
+                    "id" => 20,
+                    "message" => "Não há dados a serem inseridos."
+                ),
+                array(
+                    "id" => 21,
+                    "message" => "Há campos obrigatórios que não foram preenchidos"
+                )
+                ),
+
+            "Insert" => array(
+                array(
+                    "id" => 30,
+                    "message" => "Falha ao inserir os dados no banco"
+                )
+            ),
+
+            "Delete" => array(
+                array(
+                    "id" => 40,
+                    "message" => "Falha ao excluir o registro."
+                )
+            ),
+
+            "Select" => array(
+                array(
+                    "id" => 50,
+                    "message" => "Não há dados cadastrados."
+                )
+            ),
+
+            "Update" => array(
+                array(
+                    "id" => 60,
+                    "message" => "Falha ao atualizar o registro."
+                )
+            )
+        
+
+
+
+
+        ),
+        "success"   => array(
+            "Insert" => array(
+                array("id" => 100, 
+                      "message" => "Registro inserido com sucesso!"
+                ),
+            ),
+
+            "Update" => array(
+                array("id" => 200,
+                      "message" => "Registro atualizado com sucesso!"
+                )
+            ),
+
+            "Delete" => array(
+                array(
+                    "id" => 300,
+                    "message" => "Registro excluído com sucesso!"
+                )
+            )
+        )
+));
 
 
 

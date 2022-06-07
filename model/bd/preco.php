@@ -66,10 +66,9 @@ function updatePreco($dados) {
 
    // Script SQL para atualizar um Preco
    $sql = "UPDATE tblPreco SET
-                primeiraHora           = {$dados['primeiraHora']},
-                demaisHoras            = {$dados['demaisHoras']},
+                primeiraHora    = {$dados['primeiraHora']},
+                demaisHoras     = {$dados['demaisHoras']},
                 idTipoVeiculo   = {$dados['idTipoVeiculo']}
-                
             WHERE id = '{$dados['id']}'";
 
    // Validação para verificar se o Script SQL está correto

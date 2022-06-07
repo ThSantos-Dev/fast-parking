@@ -6,8 +6,11 @@
  * Versão: 1.0
  ******************************************************************************************/
 
-// Import do arquivo de configurações
-require_once('../../module/config.php');
+//  Constantes para estabelecer a conexão com o BD:
+const DB_SERVER = 'localhost';
+const DB_USER = 'root';
+const DB_PASSWORD = 'bcd127';
+const DB_DATABASE = 'dbEstacionamento';
 
 // Função que realiza a conexão com o MYSQL
 function conexaoMySQL() {

@@ -24,7 +24,7 @@ function insertCorredor($dados) {
 
     // Script SQL para inserir um novo Corredor
     $sql = "INSERT INTO tblCorredor(
-                            idCorredor,
+                            idSetor,
                             nome
                     )
                     VALUES(
@@ -95,7 +95,7 @@ function updateCorredor($dados) {
     $sql = "UPDATE tblCorredor SET
                 idSetor = {$dados['idSetor']},
                 nome    = {$dados['nome']}
-            WHERE id = '{$dados['id']}'";
+            WHERE id    = '{$dados['id']}'";
 
     // Validação para verificar se o Script SQL está correto
     if(mysqli_query($conexao, $sql)) {
@@ -113,28 +113,42 @@ function updateCorredor($dados) {
 /**
  * Função responsável por listar todos os Corredores
  * @param Void
- * @return Array Dados encontrados
+ * @return Array Dados encontrados ou false se não existirem dados
  */
 function selectAllCorredores() {
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
 
     // Script SQL para listar todos os Corredores
-    $sql = "SELECT 
-                tblCorredor.id,
-                tblCorredor.idSetor,
-                tblCorredor.nome AS codigo,
+    $sql = " ";
 
-                tblSetor.nome AS setor,
+    $resposta = mysqli_query($conexao, $sql);
 
-                tblPiso.id AS idPiso,
-                tblPiso.nome AS piso
+    // Validação para verificar se houve retorno do BD
+    if($resposta) {
+        // Convertendo os dados obtidos em Array
+        $contador = 0;
+        while($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado
+            $arrayDados[$contador] = array(
+                "id"        => $resultado['id'],
+                "codigo"    => $resultado['codigo'],
 
-                FROM tblCorredor
-                    INNER JOIN tblSetor
-                        ON tblCorredor.idSetor = tblSetor.id
-                    INNER JOIN tblPiso
-                        ON tblSetor.idPiso = tblPiso.id";
+                "localizacao" => array(
+                    "piso" => $resultado['piso'],
+                    "setor" => $resultado['setor']
+                )
+            );
+
+            $contador++;
+        }
+    }
+
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arraydados) ? $arraydados : false;
 
 }
 ?>
