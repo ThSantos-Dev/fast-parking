@@ -1,9 +1,10 @@
-<?php 
+<?php
+
 /**
  * Objetivo: Arquivo de funções que manipularão o BD
  * Autor: Thales Santos
  * Data: 03/06/2022
- * Versão: 1.0
+ * Versão: 2.0
  */
 
 // Import do arquivo responsável pela Conexão do BD 
@@ -12,10 +13,11 @@ require_once('conexaoMySQL.php');
 /**
  * Função responsável por inserir nova Vaga
  * @author Thales Santos
- * @param Array $dados Informações da vaga: código, IDs: corredor, status da vaga, tipo da veículo
+ * @param Array $dados Informações da vaga: código, status e IDs: corredor, tipo da veículo
  * @return Bool True se foi inserido, senão, false.
  */
-function insertVaga($dados) {
+function insertVaga($dados)
+{
     // Abrindo a conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -26,19 +28,21 @@ function insertVaga($dados) {
     $sql = "INSERT INTO tblVaga(
                             idCorredor,
                             ativo,
+                            ocupada,
                             idTipoVeiculo,
                             codigo
                         )
                         VALUES(
                             {$dados['idCorredor']},
                             {$dados['ativo']},
+                            {$dados['ocupada']},
                             {$dados['idTipoVeiculo']},
-                            {$dados['codigo']})";
+                            '{$dados['codigo']}')";
 
     // Validação para verificar se o Script SQL está correto
-    if(mysqli_query($conexao, $sql)){
+    if (mysqli_query($conexao, $sql)) {
         // Validação para verificar se houve a inserção 
-        if(mysqli_affected_rows($conexao))
+        if (mysqli_affected_rows($conexao))
             $statusResposta = true;
     }
 
@@ -55,56 +59,59 @@ function insertVaga($dados) {
  * @param Array $dados Informações da vaga: código, IDs: vaga, corredor, status da vaga, tipo da veículo
  * @return Bool True se foi inserido, senão, false.
  */
-function updateVaga($dados) {
-        // Abrindo a conexão com o BD
-        $conexao = conexaoMySQL();
+function updateVaga($dados)
+{
+    // Abrindo a conexão com o BD
+    $conexao = conexaoMySQL();
 
-        // Variável de ambiente
-        $statusResposta = (bool) false;
-    
-        // Script SQL para inserir nova Vaga
-        $sql = "UPDATE tblVaga SET
+    // Variável de ambiente
+    $statusResposta = (bool) false;
+
+    // Script SQL para inserir nova Vaga
+    $sql = "UPDATE tblVaga SET
                     idCorredor      = {$dados['idCorredor']},
                     ativo           = {$dados['status']},
                     idTipoVeiculo   = {$dados['idTipoVeiculo']},
                     codigo          = {$dados['codigo']}
                 WHERE id = {$dados['id']}";
-    
-        // Validação para verificar se o Script SQL está correto
-        if(mysqli_query($conexao, $sql)){
-            // Validação para verificar se houve a inserção 
-            if(mysqli_affected_rows($conexao))
-                $statusResposta = true;
-        }
-    
-        // Solicitando o fechamento da conexão com o BD
-        fecharConexaoMySQL($conexao);
-    
-        // Retonando o status da solicitação
-        return $statusResposta;
+
+    // Validação para verificar se o Script SQL está correto
+    if (mysqli_query($conexao, $sql)) {
+        // Validação para verificar se houve a inserção 
+        if (mysqli_affected_rows($conexao))
+            $statusResposta = true;
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retonando o status da solicitação
+    return $statusResposta;
 }
 
 /**
- * Função responsável por apagar uma Vaga
+ * Função responsável por inativar uma Vaga
  * @author Thales Santos
- * @param Int $id Id da vaga a ser apagada
- * @return Bool True se foi apagado , senão, false.
+ * @param Int $id Id da vaga a ser inativada
+ * @return Bool True se foi inativada , senão, false.
  */
-function deleteVaga($id) {
+function inactivateVaga($id)
+{
     // Abre a conexão com o BD
     $conexao = conexaoMySQL();
 
     // Variável de ambiente
     $statusResposta = (bool) false;
 
-    // Script SQL para apagar uma vaga
-    $sql = "DELETE FROM tblVaga 
-                WHERE id = {$id}";
+    // Script SQL para inativar uma vaga
+    $sql = "UPDATE tblVaga SET
+                ativo = 0    
+            WHERE id = {$id}";
 
     // Validação para verificar se o Script SQL está correto
-    if(mysqli_query($conexao, $sql)) {
-        // Validação para verificar se o registro foi apagado
-        if(mysqli_affected_rows($conexao))
+    if (mysqli_query($conexao, $sql)) {
+        // Validação para verificar se o registro foi alterado
+        if (mysqli_affected_rows($conexao))
             $statusResposta = true;
     }
 
@@ -115,12 +122,110 @@ function deleteVaga($id) {
 }
 
 /**
+ * Função responsável por ativar uma Vaga
+ * @author Thales Santos
+ * @param Int $id Id da vaga a ser ativada
+ * @return Bool True se foi ativada , senão, false.
+ */
+function activateVaga($id)
+{
+    // Abre a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Variável de ambiente
+    $statusResposta = (bool) false;
+
+    // Script SQL para inativar uma vaga
+    $sql = "UPDATE tblVaga SET
+                ativo = 1   
+            WHERE id = {$id}";
+
+    // Validação para verificar se o Script SQL está correto
+    if (mysqli_query($conexao, $sql)) {
+        // Validação para verificar se o registro foi alterado
+        if (mysqli_affected_rows($conexao))
+            $statusResposta = true;
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    return $statusResposta;
+}
+
+/**
+ * Função responsável por ocupar uma Vaga (alterar ocupado para 1)
+ * @author Thales Santos
+ * @param Int $id Id da vaga a ser ocupada
+ * @return Bool True se foi ativada , senão, false.
+ */
+function toOccupyVaga($id)
+{
+    // Abre a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Variável de ambiente
+    $statusResposta = (bool) false;
+
+    // Script SQL para ocupar uma vaga
+    $sql = "UPDATE tblVaga SET
+                ocupado = 1   
+            WHERE id = {$id}";
+
+    // Validação para verificar se o Script SQL está correto
+    if (mysqli_query($conexao, $sql)) {
+        // Validação para verificar se o registro foi alterado
+        if (mysqli_affected_rows($conexao))
+            $statusResposta = true;
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    return $statusResposta;
+}
+
+/**
+ * Função responsável por desocupar uma Vaga (alterar ocupado para 0)
+ * @author Thales Santos
+ * @param Int $id Id da vaga a ser desocupada
+ * @return Bool True se foi ativada , senão, false.
+ */
+function vacateVaga($id)
+{
+    // Abre a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Variável de ambiente
+    $statusResposta = (bool) false;
+
+    // Script SQL para desocupar uma vaga
+    $sql = "UPDATE tblVaga SET
+                ocupado = 1   
+            WHERE id = {$id}";
+
+    // Validação para verificar se o Script SQL está correto
+    if (mysqli_query($conexao, $sql)) {
+        // Validação para verificar se o registro foi alterado
+        if (mysqli_affected_rows($conexao))
+            $statusResposta = true;
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    return $statusResposta;
+}
+
+
+/**
  * Função responsável por listar TODAS as Vagas
  * @author Thales Santos
  * @param Void
  * @return Array Dados encontrados
  */
-function selectAllVagas() {
+function selectAllVagas()
+{
     // Abrindo a conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -128,11 +233,12 @@ function selectAllVagas() {
     $sql = "SELECT
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
-                tblVaga.idStatusVaga,
                 tblVaga.codigo AS codigo,
-
-                tblStatusVaga.nome AS status,
+                tblVaga.ocupada AS status,
+                tblVaga.ativo,
        
+                tblTipoVeiculo.nome AS tipo,
+
                 tblCorredor.nome AS corredor,
 
                 tblSetor.nome AS setor,
@@ -145,52 +251,48 @@ function selectAllVagas() {
                     INNER JOIN tblTipoVeiculo
                         ON tblVaga.idTipoVeiculo = tblTipoVeiculo.id
 
-                    INNER JOIN tblStatusVaga
-                        ON tblVaga.idStatusVaga = tblStatusVaga.id
-                    
                     INNER JOIN tblCorredor
                        ON tblVaga.idCorredor = tblCorredor.id
                    INNER JOIN tblSetor
                        ON tblCorredor.idSetor = tblSetor.id
                    INNER JOIN tblPiso
                        ON tblSetor.idPiso = tblPiso.id";
-    
-    $resposta = mysqli_query($conexao, $sql);
-   
-       // Validação para verificar se houve retorno
-       if($resposta) {
-           // Convertendo os dados obtidos em  array
-           $contador = 0;
-           while($resultado = mysqli_fetch_assoc($resposta)) {
-               // Montando um array personalizado com os dados obtidos
-               $arrayDados[$contador] = array(
-                   "id" => $resultado['id'],
-   
-                    "codigo" => $resultado['codigo'],
-                    "sigla" => $resultado['sigla'],
-                    "status" => array(
-                        "id" => $resultado['idStatusVaga'],
-                        "situacao" => $resultado['status']
-                    ),
 
-                    "localizacao" => array(
-                        "corredor" => $resultado['corredor'],
-                        "setor" => $resultado['setor'],
-                        "piso" => $resultado['piso']
-                    )
-               );
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno
+    if ($resposta) {
+        // Convertendo os dados obtidos em  array
+        $contador = 0;
+        while ($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado com os dados obtidos
+            $arrayDados[$contador] = array(
+                "id" => $resultado['id'],
+
+                "codigo" => $resultado['codigo'],
+                "sigla" => $resultado['sigla'],
+                "status" => $resultado['status'],
+                "ativo" => $resultado['ativo'],
+                "tipo" => $resultado['tipo'],
+
+                "localizacao" => array(
+                    "corredor" => $resultado['corredor'],
+                    "setor" => $resultado['setor'],
+                    "piso" => $resultado['piso']
+                )
+            );
 
             // Incrementando o contador para que não haja sobrescrita dos dados
             $contador++;
-           }
-       }
-   
-   
-       // Solitando o fechamento da conexão com o BD
-       fecharConexaoMySQL($conexao);
-   
-       // Retornando os dados encontrados ou false
-       return isset($arrayDados) ? $arrayDados : false;
+        }
+    }
+
+
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arrayDados) ? $arrayDados : false;
 }
 
 /**
@@ -199,7 +301,8 @@ function selectAllVagas() {
  * @param Int $id ID da vaga
  * @return Array Dados encontrados ou false
  */
-function selectByIdVaga($id){
+function selectByIdVaga($id)
+{
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -207,10 +310,11 @@ function selectByIdVaga($id){
     $sql = "SELECT
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
-                tblVaga.idStatusVaga,
                 tblVaga.codigo AS codigo,
+                tblVaga.ocupada AS status,
+                tblVaga.ativo,
 
-                tblStatusVaga.nome AS status,
+                tblTipoVeiculo.nome AS tipo,
 
                 tblCorredor.nome AS corredor,
 
@@ -223,9 +327,6 @@ function selectByIdVaga($id){
                 FROM tblVaga
                     INNER JOIN tblTipoVeiculo
                         ON tblVaga.idTipoVeiculo = tblTipoVeiculo.id
-
-                    INNER JOIN tblStatusVaga
-                        ON tblVaga.idStatusVaga = tblStatusVaga.id
                     
                     INNER JOIN tblCorredor
                         ON tblVaga.idCorredor = tblCorredor.id
@@ -238,27 +339,25 @@ function selectByIdVaga($id){
     $resposta = mysqli_query($conexao, $sql);
 
     // Validação para verificar se houve retorno
-    if($resposta) {
+    if ($resposta) {
         // Convertendo os dados obtidos em  array
-        if($resultado = mysqli_fetch_assoc($resposta)) {
+        if ($resultado = mysqli_fetch_assoc($resposta)) {
             // Montando um array personalizado com os dados obtidos
             $arrayDados = array(
                 "id" => $resultado['id'],
 
-                "codigo" => $resultado['codigo'],
-                "sigla" => $resultado['sigla'],
-                "status" => array(
-                    "id" => $resultado['idStatusVaga'],
-                    "situacao" => $resultado['status']
-                ),
+                "codigo"    => $resultado['codigo'],
+                "sigla"     => $resultado['sigla'],
+                "status"    => $resultado['status'],
+                "ativo"     => $resultado['ativo'],
+                "tipo"      => $resultado['tipo'],
 
                 "localizacao" => array(
-                    "corredor" => $resultado['corredor'],
-                    "setor" => $resultado['setor'],
-                    "piso" => $resultado['piso']
+                    "corredor"  => $resultado['corredor'],
+                    "setor"     => $resultado['setor'],
+                    "piso"      => $resultado['piso']
                 )
             );
-
         }
     }
 
@@ -268,16 +367,16 @@ function selectByIdVaga($id){
 
     // Retornando os dados encontrados ou false
     return isset($arrayDados) ? $arrayDados : false;
-
 }
 
 /**
  * Função responsável por listar as vagas por Status - Ocupadas / Livres
  * @author Thales Santos
- * @param Int $id ID que representa o Status 
+ * @param Tinyint 0 se quiser vagas livres e 1 se as vagas ocupadas
  * @return Array Dados encontrados
  */
-function selectByStatusVaga($id) {
+function selectByStatusVaga($livre)
+{
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -285,11 +384,12 @@ function selectByStatusVaga($id) {
     $sql = "SELECT
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
-                tblVaga.idStatusVaga,
-                tblVaga.codigo AS codigo,
+                tblVaga.codigo,
+                tblVaga.ocupada AS status,
+                tblVaga.ativo,
+                
+                tblTipoVeiculo.nome AS tipo,
 
-                tblStatusVaga.nome AS status,
-       
                 tblCorredor.nome AS corredor,
 
                 tblSetor.nome AS setor,
@@ -301,57 +401,58 @@ function selectByStatusVaga($id) {
                 FROM tblVaga
                     INNER JOIN tblTipoVeiculo
                         ON tblVaga.idTipoVeiculo = tblTipoVeiculo.id
-
-                    INNER JOIN tblStatusVaga
-                        ON tblVaga.idStatusVaga = tblStatusVaga.id
                     
                     INNER JOIN tblCorredor
-                       ON tblVaga.idCorredor = tblCorredor.id
-                   INNER JOIN tblSetor
-                       ON tblCorredor.idSetor = tblSetor.id
-                   INNER JOIN tblPiso
-                       ON tblSetor.idPiso = tblPiso.id
-            WHERE tblVaga.idStatusVaga = {$id}";
-    
-    $resposta = mysqli_query($conexao, $sql);
-   
-       // Validação para verificar se houve retorno
-       if($resposta) {
-           // Convertendo os dados obtidos em  array
-           $contador = 0;
-           while($resultado = mysqli_fetch_assoc($resposta)) {
-               // Montando um array personalizado com os dados obtidos
-               $arrayDados[$contador] = array(
-                   "id" => $resultado['id'],
-   
-                    "codigo" => $resultado['codigo'],
-                    "sigla" => $resultado['sigla'],
-                    "status" => array(
-                        "id" => $resultado['idStatusVaga'],
-                        "situacao" => $resultado['status']
-                    ),
+                        ON tblVaga.idCorredor = tblCorredor.id
 
-                    "localizacao" => array(
-                        "corredor" => $resultado['corredor'],
-                        "setor" => $resultado['setor'],
-                        "piso" => $resultado['piso']
-                    )
-               );
+                    INNER JOIN tblSetor
+                        ON tblCorredor.idSetor = tblSetor.id
+                        
+                    INNER JOIN tblPiso
+                        ON tblSetor.idPiso = tblPiso.id
+
+            WHERE tblVaga.ocupada = {$livre}
+                AND tblCorredor.ativo = 1
+                AND tblSetor.ativo = 1
+                AND tblPiso.ativo = 1";
+
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno
+    if ($resposta) {
+        // Convertendo os dados obtidos em  array
+        $contador = 0;
+        while ($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado com os dados obtidos
+            $arrayDados[$contador] = array(
+                "id" => $resultado['id'],
+
+                "codigo" => $resultado['codigo'],
+                "sigla" => $resultado['sigla'],
+                "status" => $resultado['status'],
+                "ativo" => $resultado['ativo'],
+                "tipo" => $resultado['tipo'],
+
+                "localizacao" => array(
+                    "corredor" => $resultado['corredor'],
+                    "setor" => $resultado['setor'],
+                    "piso" => $resultado['piso']
+                )
+            );
 
             // Incrementando o contador para que não haja sobrescrita dos dados
             $contador++;
-           }
-       }
-   
-   
-       // Solitando o fechamento da conexão com o BD
-       fecharConexaoMySQL($conexao);
-   
-       // Retornando os dados encontrados ou false
-       return isset($arrayDados) ? $arrayDados : false;
+        }
+    }
 
 
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arrayDados) ? $arrayDados : false;
 }
+
 
 /**
  * Função responsável por listar as vagas por Tipo - Carro / Moto
@@ -359,7 +460,8 @@ function selectByStatusVaga($id) {
  * @param Int $id ID que representa o Tipo da vaga 
  * @return Array Dados encontrados
  */
-function selectByTipoVaga($id) {
+function selectByTipoVaga($id)
+{
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
 
@@ -367,10 +469,11 @@ function selectByTipoVaga($id) {
     $sql = "SELECT
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
-                tblVaga.idStatusVaga,
-                tblVaga.codigo AS codigo,
+                tblVaga.codigo,
+                tblVaga.ocupada AS status,
+                tblVaga.ativo,
 
-                tblStatusVaga.nome AS status,
+                tblTipoVeiculo.nome AS tipo,
        
                 tblCorredor.nome AS corredor,
 
@@ -383,9 +486,6 @@ function selectByTipoVaga($id) {
                 FROM tblVaga
                     INNER JOIN tblTipoVeiculo
                         ON tblVaga.idTipoVeiculo = tblTipoVeiculo.id
-
-                    INNER JOIN tblStatusVaga
-                        ON tblVaga.idStatusVaga = tblStatusVaga.id
                     
                     INNER JOIN tblCorredor
                        ON tblVaga.idCorredor = tblCorredor.id
@@ -394,47 +494,126 @@ function selectByTipoVaga($id) {
                    INNER JOIN tblPiso
                        ON tblSetor.idPiso = tblPiso.id
             WHERE tblVaga.idTipoVeiculo = {$id}";
-    
-    $resposta = mysqli_query($conexao, $sql);
-   
-       // Validação para verificar se houve retorno
-       if($resposta) {
-           // Convertendo os dados obtidos em  array
-           $contador = 0;
-           while($resultado = mysqli_fetch_assoc($resposta)) {
-               // Montando um array personalizado com os dados obtidos
-               $arrayDados[$contador] = array(
-                   "id" => $resultado['id'],
-   
-                    "codigo" => $resultado['codigo'],
-                    "sigla" => $resultado['sigla'],
-                    "status" => array(
-                        "id" => $resultado['idStatusVaga'],
-                        "situacao" => $resultado['status']
-                    ),
 
-                    "localizacao" => array(
-                        "corredor" => $resultado['corredor'],
-                        "setor" => $resultado['setor'],
-                        "piso" => $resultado['piso']
-                    )
-               );
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno
+    if ($resposta) {
+        // Convertendo os dados obtidos em  array
+        $contador = 0;
+        while ($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado com os dados obtidos
+            $arrayDados[$contador] = array(
+                "id"         => $resultado['id'],
+
+                "codigo"    => $resultado['codigo'],
+                "sigla"     => $resultado['sigla'],
+                "status"    => $resultado['status'],
+                "ativo"    => $resultado['ativo'],
+                "tipo"      => $resultado['tipo'],
+
+                "localizacao" => array(
+                    "corredor"  => $resultado['corredor'],
+                    "setor"     => $resultado['setor'],
+                    "piso"      => $resultado['piso']
+                )
+            );
 
             // Incrementando o contador para que não haja sobrescrita dos dados
             $contador++;
-           }
-       }
-   
-   
-       // Solitando o fechamento da conexão com o BD
-       fecharConexaoMySQL($conexao);
-   
-       // Retornando os dados encontrados ou false
-       return isset($arrayDados) ? $arrayDados : false;
+        }
+    }
 
 
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arrayDados) ? $arrayDados : false;
 }
 
+/** 
+ * Função responsável por listar as vagar por Tipo e Status
+ * @author Thales Santos
+ * @param Array $dados Informações da busca: 
+ *                          Ocupada - 0 para  livres e 1 para  ocupadas
+ * @return Array Dados encontrados ou false caso não haja resultados
+*/
+function selectByStatusAndTipoVaga($dados) {
+    // Abrindo conexão com o BD
+    $conexao = conexaoMySQL();
 
+    // Script SQL para listar todas as vagas por tipo
+    $sql = "SELECT
+                tblVaga.id,
+                tblVaga.idTipoVeiculo,
+                tblVaga.codigo,
+                tblVaga.ocupada AS status,
+                tblVaga.ativo,
+                
+                tblTipoVeiculo.nome AS tipo,
 
-?>
+                tblCorredor.nome AS corredor,
+
+                tblSetor.nome AS setor,
+
+                tblPiso.nome AS piso,
+
+                upper(concat_ws('-', tblPiso.nome, tblSetor.nome, tblCorredor.nome, tblVaga.codigo)) as sigla
+
+                FROM tblVaga
+                    INNER JOIN tblTipoVeiculo
+                        ON tblVaga.idTipoVeiculo = tblTipoVeiculo.id
+                    
+                    INNER JOIN tblCorredor
+                        ON tblVaga.idCorredor = tblCorredor.id
+
+                    INNER JOIN tblSetor
+                        ON tblCorredor.idSetor = tblSetor.id
+                        
+                    INNER JOIN tblPiso
+                        ON tblSetor.idPiso = tblPiso.id
+
+            WHERE tblVaga.ocupada = {$dados['ocupada']}
+                AND tblVaga.idTipoVeiculo = {$dados['idTipoVeiculo']}
+                AND tblCorredor.ativo = 1
+                AND tblSetor.ativo = 1
+                AND tblPiso.ativo = 1";
+
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno
+    if ($resposta) {
+        // Convertendo os dados obtidos em  array
+        $contador = 0;
+        while ($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado com os dados obtidos
+            $arrayDados[$contador] = array(
+                "id"         => $resultado['id'],
+
+                "codigo"    => $resultado['codigo'],
+                "sigla"     => $resultado['sigla'],
+                "status"    => $resultado['status'],
+                "ativo"     => $resultado['ativo'],
+                "tipo"      => $resultado['tipo'],
+
+                "localizacao" => array(
+                    "corredor"  => $resultado['corredor'],
+                    "setor"     => $resultado['setor'],
+                    "piso"      => $resultado['piso']
+                )
+            );
+
+            // Incrementando o contador para que não haja sobrescrita dos dados
+            $contador++;
+        }
+    }
+
+    
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arrayDados) ? $arrayDados : false;
+
+}

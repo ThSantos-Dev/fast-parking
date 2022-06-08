@@ -43,16 +43,16 @@ function inserirCorredor($dados) {
 
 
 /**
- * Função responsável por tratar os dados para excluir um Corredor
+ * Função responsável por tratar os dados para inativar um Corredor
  * @author Thales Santos
- * @param Int $id ID do corredor a ser excluído
+ * @param Int $id ID do corredor a ser inativado
  * @return Bool True se foi excluido, senão, um Array com uma mensagem de erro
  *  */ 
-function excluirCorredor($id) {
+function inativarCorredor($id) {
     // Validação para verificar se o id informado é válido
     if(is_numeric($id) && $id > 0) {
         // Validando o retorno  do BD
-        if(deleteCorredor($id))
+        if(inactivateCorredor($id))
             return true;
         else
             return MESSAGES['error']['Delete'][0];
@@ -71,11 +71,18 @@ function atualizarCorredor($dados) {
     if(!empty($dados)){
         if(is_numeric($dados['id']) && $dados['id'] > 0){
             // Validação para verificar se o campo obrigatório 'Nome' e 'idSetor' foi informado
-            if(!empty($dados['nome']) && !empty($dados['idSetor'])){
+            if(!empty($dados['nome']) && !empty($dados['idSetor']) && !empty($dados['status'])){
                 // Validação para verificar se o ID do setor é válido
                 if(is_numeric($dados['idSetor']) && $dados['idSetor'] > 0) {
+                    // Montando um array com os dados de acordo com o Model
+                    $corredor = array(
+                        "idSetor" => $dados['idSetor'],
+                        "nome"    => $dados['nome'],
+                        "ativo"   => $dados['status']
+                    );
+
                     // Chamando a model e passando os dados 
-                    if(updateCorredor($dados))
+                    if(updateCorredor($corredor))
                         return true;
                     else
                         return MESSAGES['error']['Insert'][0];
@@ -99,6 +106,38 @@ function atualizarCorredor($dados) {
 function listaCorredores() {
     // Chamando a função responsável por retornar os dados de todos os Corredores
     $resposta = selectAllCorredores();
+
+    // Validação para verificar se houve retorno de dados por parte do BD
+    if(is_array($resposta) && count($resposta) > 0)  
+        return $resposta;
+    elseif(is_bool($resposta) && $resposta == false) 
+        return MESSAGES['error']['Select'][0];
+}
+/**
+ * Função responsável por retornar os dados de todos os Corredores ativos
+ * @author Thales Santos
+ * @param Void
+ * @return Array Dados encontrados ou uma mensagem de erro
+ *  */ 
+function listaCorredoresAtivos() {
+    // Chamando a função responsável por retornar os dados de todos os Corredores
+    $resposta = selectAllCorredoresAtivated();
+
+    // Validação para verificar se houve retorno de dados por parte do BD
+    if(is_array($resposta) && count($resposta) > 0)  
+        return $resposta;
+    elseif(is_bool($resposta) && $resposta == false) 
+        return MESSAGES['error']['Select'][0];
+}
+/**
+ * Função responsável por retornar os dados de todos os Corredores inativos
+ * @author Thales Santos
+ * @param Void
+ * @return Array Dados encontrados ou uma mensagem de erro
+ *  */ 
+function listaCorredoresInativos() {
+    // Chamando a função responsável por retornar os dados de todos os Corredores
+    $resposta = selectAllCorredoresInativated();
 
     // Validação para verificar se houve retorno de dados por parte do BD
     if(is_array($resposta) && count($resposta) > 0)  
