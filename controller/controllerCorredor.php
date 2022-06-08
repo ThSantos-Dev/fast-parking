@@ -145,4 +145,26 @@ function listaCorredoresInativos() {
     elseif(is_bool($resposta) && $resposta == false) 
         return MESSAGES['error']['Select'][0];
 }
+
+/**
+ * Função responsável por buscar informações de um Corredor pelo ID
+ * @author Thales Santos
+ * @param Int $id ID do Corredor
+ * @return Array Dados encontrados ou mensagem de erro
+ */
+function buscaCorredor($id) {
+    // Validação para verificar se o ID informado é um ID válido
+    if(is_numeric($id) && $id > 0) {
+        // Chamando a model para busca de corredor por ID 
+        $resposta = selectByIdCorredor($id);
+
+        // Validação para verificar o retorno do BD
+        if(is_array($resposta)) 
+            return $resposta;
+        else
+            return MESSAGES['error']['Data'][0];
+    }
+        
+}
+
 ?>

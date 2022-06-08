@@ -169,6 +169,62 @@ function selectAllCorredores() {
     return isset($arrayDados) ? $arrayDados : false;
 }
 
+
+/**
+ * Função responsável por buscar informações de um corredor pelo ID
+ * @author Thales Santos
+ * @param Int $id ID do corredor
+ * @return Array Dados encontrados ou False
+ */
+function selectByIdCorredor($id) {
+    // Abrindo conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Script SQL para listar todos os Corredores
+    $sql = "SELECT 
+                tblCorredor.id,
+                tblCorredor.nome AS codigo,
+                tblCorredor.ativo AS status,
+                
+                tblPiso.nome AS piso,
+                tblSetor.nome AS setor
+                
+                FROM tblCorredor
+                    INNER JOIN tblSetor
+                        ON tblCorredor.idSetor = tblSetor.id
+                    INNER JOIN tblPiso 
+                        ON tblSetor.idPiso = tblPiso.id
+            WHERE tblCorredor.id = {$id}";
+
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno do BD
+    if($resposta) {
+        // Convertendo os dados obtidos em Array
+        if($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado
+            $arrayDados = array(
+                "id"        => $resultado['id'],
+                "codigo"    => $resultado['codigo'],
+                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
+
+                "localizacao" => array(
+                    "piso" => $resultado['piso'],
+                    "setor" => $resultado['setor']
+                )
+            );
+        }
+
+    }
+
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+        
+    // Retornando os dados encontrados ou false
+    return isset($arrayDados) ? $arrayDados : false;    
+}
+
+
 /**
  * Função responsável por listar todos os Corredores
  * @param Void
