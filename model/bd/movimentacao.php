@@ -14,15 +14,12 @@ require_once('conexaoMySQL.php');
  *   @author Thales Santos 
  *   @param Array $dados Informações da movimentação 
  *                       (id do veículo e vaga).
- *   @return Bool True se foi inserido, senão, false.
+ *   @return Int ID da movimentação ou false
  * */
 function insertMovimentacao($dados)
 {
     // Abrindo conexão com o BD
     $conexao = conexaoMySQL();
-
-    // Variável de ambiente
-    $statusResposta = (bool) false;
 
     // Script SQL para inserir uma Movimentação (entrada)
     $sql = "INSERT INTO tblMovimentacao(
@@ -42,14 +39,14 @@ function insertMovimentacao($dados)
     if (mysqli_query($conexao, $sql)) {
         // Validação para verificar se houve inserção no BD
         if (mysqli_affected_rows($conexao))
-            $statusResposta = true;
+            $idMovimentacao = mysqli_insert_id($conexao);
     }
 
     // Solicitando o fechamento da conexão 
     fecharConexaoMySQL($conexao);
 
     // Retornando o status da solicitação
-    return $statusResposta;
+    return isset($idMovimentacao) ? $idMovimentacao : false;
 }
 
 
@@ -126,7 +123,7 @@ function updateMovimentacao($dados){
  * Função responsável por listar todas as Movimentações 
  * @author Thales Santos 
  * @param Void 
- * @return Array Dados encontrados no BD
+ * @return Array Dados encontrados no BD ou false
  */
 function selectAllMovimentacoes() {
        // Abrindo conexão com o BD
@@ -248,7 +245,7 @@ function selectAllMovimentacoes() {
  * Função responsável por buscar uma Moviementação por ID
  * @author Thales Santos 
  * @param Int ID da moviementação
- * @return Array Dados encontrados na busca
+ * @return Array Dados encontrados na busca ou false
  */
 function selectByIdMovimentacao($id){
     // Abrindo conexão com o BD
@@ -361,4 +358,14 @@ function selectByIdMovimentacao($id){
 
     // Retornando os dados encontrados ou false
     return isset($dados) ? $dados : false;
+}
+
+/**
+ * Função responsável por calcular o valor que o cliente deverá pagar no momento de sua saída
+ * @author Thales Santos
+ * @param Array $id ID da movimentação
+ * @return Array Dados atualizados com os valores atualizados 
+ */
+function teste($id) {
+    
 }

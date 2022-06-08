@@ -149,7 +149,7 @@ function selectAllCorredores() {
             $arrayDados[$contador] = array(
                 "id"        => $resultado['id'],
                 "codigo"    => $resultado['codigo'],
-                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
+                "status"    => $resultado['status'],
 
                 "localizacao" => array(
                     "piso" => $resultado['piso'],
@@ -206,7 +206,7 @@ function selectByIdCorredor($id) {
             $arrayDados = array(
                 "id"        => $resultado['id'],
                 "codigo"    => $resultado['codigo'],
-                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
+                "status"    => $resultado['status'] ,
 
                 "localizacao" => array(
                     "piso" => $resultado['piso'],
@@ -261,7 +261,7 @@ function selectAllCorredoresAtivated() {
             $arrayDados[$contador] = array(
                 "id"        => $resultado['id'],
                 "codigo"    => $resultado['codigo'],
-                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
+                "status"    => $resultado['status'],
 
                 "localizacao" => array(
                     "piso" => $resultado['piso'],
@@ -317,7 +317,7 @@ function selectAllCorredoresInativated() {
             $arrayDados[$contador] = array(
                 "id"        => $resultado['id'],
                 "codigo"    => $resultado['codigo'],
-                "status"    => $resultado['status'] != 0 ? "Ativo" : "Inativo",
+                "status"    => $resultado['status'],
 
                 "localizacao" => array(
                     "piso" => $resultado['piso'],

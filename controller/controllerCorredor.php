@@ -164,7 +164,6 @@ function buscaCorredor($id) {
         else
             return MESSAGES['error']['Data'][0];
     }
-        
 }
 
 ?>
