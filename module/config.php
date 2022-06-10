@@ -12,7 +12,7 @@
 
 // Caminho relativo
 // define("SRC", $_SERVER['DOCUMENT_ROOT'] . '/senai/fastparking/');
-define("SRC", $_SERVER['DOCUMENT_ROOT'] . '/fastparking/');
+define("SRC", $_SERVER['DOCUMENT_ROOT'] . '/senai/fastparking/');
 
 define("MESSAGES", array(
         "error"     => array(

@@ -366,6 +366,141 @@ function selectByIdMovimentacao($id){
  * @param Array $id ID da movimentação
  * @return Array Dados atualizados com os valores atualizados 
  */
-function teste($id) {
+function calculateOutput($id) {
+    // Abrindo a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Script SQL para calcular o valor que o cliente deve pagar
+    $sql = "
+        SELECT 
+                tblMovimentacao.id,
+                tblMovimentacao.dataEntrada,
+                curdate() AS dataSaida,
+				tblMovimentacao.horaEntrada,               
+                curtime() AS horaSaida,
+                datediff(curdate(), tblMovimentacao.dataEntrada) AS dias,
+                timediff(tblMovimentacao.horaEntrada, curtime()) AS horas,
+                                
+                IF (
+					 datediff(curdate(), tblMovimentacao.dataEntrada) > 0,
+                     70 * datediff(curdate(), tblMovimentacao.dataEntrada),																			
+                    IF(
+						hour(timediff(tblMovimentacao.horaEntrada, curtime())) > 0 & minute(timediff(tblMovimentacao.horaEntrada, curtime())) > 0, 					
+						tblPreco.demaisHoras * hour(timediff(tblMovimentacao.horaEntrada, curtime())) + tblPreco.primeiraHora, 		
+                    
+						IF(																			
+							hour(timediff(tblMovimentacao.horaEntrada, curtime())) = 0 & minute(timediff(tblMovimentacao.horaEntrada, curtime())) < 60,				
+							tblPreco.primeiraHora,													
+							null																	
+						)																
+					)
+                ) as valor,
+                
+                
+                tblVeiculo.placa,
+                tblVeiculo.fabricante,
+                tblVeiculo.modelo,
+                
+                tblCor.nome as cor,
+                tblTipoVeiculo.nome as tipo,
+                tblCliente.nome as cliente,
+                tblCliente.telefone,
+                
+                upper(concat_ws('-', tblPiso.nome, tblSetor.nome, tblCorredor.nome, tblVaga.codigo)) as sigla,
+                tblVaga.codigo as codigo,
+                
+                tblCorredor.nome as corredor,
+                tblSetor.nome as setor,
+                tblPiso.nome as piso
+                FROM tblMovimentacao
+                    INNER JOIN tblVeiculo 
+                        ON tblMovimentacao.idVeiculo = tblVeiculo.id
+                        
+                    INNER JOIN tblCor
+                        ON tblVeiculo.idCor = tblCor.id
+                        
+                    INNER JOIN tblTipoVeiculo
+                        ON tblVeiculo.idTipoVeiculo = tblTipoVeiculo.id
+					
+                    INNER JOIN tblPreco
+						ON tblTipoVeiculo.id = tblPreco.idTipoVeiculo
+                    
+                    INNER JOIN tblCliente
+                        ON tblVeiculo.idCliente = tblCliente.id
+                    
+                    INNER JOIN tblVaga
+                        ON tblMovimentacao.idVaga = tblVaga.id
+                    INNER JOIN tblCorredor
+                        ON tblVaga.idCorredor = tblCorredor.id
+                    INNER JOIN tblSetor
+                        ON tblCorredor.idSetor = tblSetor.id
+                    INNER JOIN tblPiso
+                        ON tblSetor.idPiso = tblPiso.id
+                    
+                WHERE tblMovimentacao.id = {$id};";
     
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validação para verificar se houve retorno do BD
+    if($resposta) {
+        // Convertendo os dados obtidos em  array
+        $contador = 0;
+        while($resultado = mysqli_fetch_assoc($resposta)) {
+            // Montando um array personalizado com os dados obtidos
+            $arraydados[$contador] = array(
+                "id" => $resultado['id'],
+
+                "cliente" => array(
+                    "nome" => $resultado['cliente'],
+                    "telefone" => $resultado['telefone']
+                ),
+
+                "veiculo" => array(
+                    "placa" => $resultado['placa'],
+                    "fabricante" => $resultado['fabricante'],
+                    "modelo" => $resultado['modelo'],
+                    "cor" => $resultado['cor'],
+                    "tipo" => $resultado['tipo']
+                ),
+
+                "vaga" => array(
+                    "codigo" => $resultado['codigo'],
+                    "sigla" => $resultado['sigla'],
+
+                    "localizacao" => array(
+                        "corredor" => $resultado['corredor'],
+                        "setor" => $resultado['setor'],
+                        "piso" => $resultado['piso']
+                    )
+                ),
+
+                "valor" => $resultado['valor'],
+
+                "entrada" => array(
+                    "data" => $resultado['dataEntrada'],
+                    "horario" => $resultado['horaEntrada']
+                ),
+                "saida" => array(
+                    "data" => $resultado['dataSaida'],
+                    "horario" => $resultado['horaSaida']
+                ),
+                "permanencia" => array(
+                    "dias" => $resultado['dias'],
+                    "horas" => $resultado['horas'],
+                )
+            );
+
+        // Incrementando o contador para que não haja sobrescrita dos dados
+        $contador++;
+        }
+    }
+
+       
+    // Solitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontrados ou false
+    return isset($arraydados) ? $arraydados : false;
 }
+
+echo json_encode(calculateOutput(4));

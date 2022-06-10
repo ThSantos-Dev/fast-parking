@@ -10,3 +10,88 @@ alter table tblPreco
 
 insert into tblPreco(primeiraHora, demaisHoras, idTipoVeiculo)
         values(28.7, 20 , 8), (40, 30,  9),(15, 10, 7);
+
+
+
+
+
+
+
+
+SET @horaEntrada := (select horaEntrada from tblMovimentacao where id = {$id});
+        SET @horaSaida := (curtime());
+        
+        SET @dataEntrada := (select dataEntrada from tblMovimentacao where id = {$id});
+        SET @dataSaida := (curdate());
+        
+        SET @permanenciaHora  = timediff(@horaEntrada, @horaSaida);
+        SET @permanenciaDias  = datediff(@dataSaida, @dataEntrada);
+        
+        select @permanenciaDias;
+        
+        SELECT 
+                        tblMovimentacao.id,
+                        tblMovimentacao.dataEntrada,
+                        @dataSaida AS dataSaida,
+                        tblMovimentacao.horaEntrada,               
+                        @horaSaida AS horaSaida,
+                        @permanenciaDias AS dias,
+                        @permanenciaHora AS horas,
+                                        
+                        IF (
+                            @permanenciaDias > 0,
+                            120,																			
+                            IF(
+                                hour(@permanenciaHora) > 0 & minute(@permanenciaHora) > 0, 					
+                                tblPreco.demaisHoras * hour(@permanenciaHora) + tblPreco.primeiraHora, 		
+                            
+                                IF(																			
+                                    hour(@permanenciaHora) = 0 & minute(@permanenciaHora) < 60,				
+                                    tblPreco.primeiraHora,													
+                                    null																	
+                                )																
+                            )
+                        ) as valor,
+                        
+                        
+                        tblVeiculo.placa,
+                        tblVeiculo.fabricante,
+                        tblVeiculo.modelo,
+                        
+                        tblCor.nome as cor,
+                        tblTipoVeiculo.nome as tipo,
+                        tblCliente.nome as cliente,
+                        tblCliente.telefone,
+                        
+                        upper(concat_ws('-', tblPiso.nome, tblSetor.nome, tblCorredor.nome, tblVaga.codigo)) as sigla,
+                        tblVaga.codigo as codigo,
+                        
+                        tblCorredor.nome as corredor,
+                        tblSetor.nome as setor,
+                        tblPiso.nome as piso
+                        FROM tblMovimentacao
+                            INNER JOIN tblVeiculo 
+                                ON tblMovimentacao.idVeiculo = tblVeiculo.id
+                                
+                            INNER JOIN tblCor
+                                ON tblVeiculo.idCor = tblCor.id
+                                
+                            INNER JOIN tblTipoVeiculo
+                                ON tblVeiculo.idTipoVeiculo = tblTipoVeiculo.id
+                            
+                            INNER JOIN tblPreco
+                                ON tblTipoVeiculo.id = tblPreco.idTipoVeiculo
+                            
+                            INNER JOIN tblCliente
+                                ON tblVeiculo.idCliente = tblCliente.id
+                            
+                            INNER JOIN tblVaga
+                                ON tblMovimentacao.idVaga = tblVaga.id
+                            INNER JOIN tblCorredor
+                                ON tblVaga.idCorredor = tblCorredor.id
+                            INNER JOIN tblSetor
+                                ON tblCorredor.idSetor = tblSetor.id
+                            INNER JOIN tblPiso
+                                ON tblSetor.idPiso = tblPiso.id
+                            
+                        WHERE tblMovimentacao.id = {$id};		
