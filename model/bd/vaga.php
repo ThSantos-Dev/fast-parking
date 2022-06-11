@@ -169,7 +169,7 @@ function toOccupyVaga($id)
 
     // Script SQL para ocupar uma vaga
     $sql = "UPDATE tblVaga SET
-                ocupado = 1   
+                ocupada = 1   
             WHERE id = {$id}";
 
     // Validação para verificar se o Script SQL está correto
@@ -189,7 +189,7 @@ function toOccupyVaga($id)
  * Função responsável por desocupar uma Vaga (alterar ocupado para 0)
  * @author Thales Santos
  * @param Int $id Id da vaga a ser desocupada
- * @return Bool True se foi ativada , senão, false.
+ * @return Bool True se foi desocupada , senão, false.
  */
 function vacateVaga($id)
 {
@@ -201,7 +201,7 @@ function vacateVaga($id)
 
     // Script SQL para desocupar uma vaga
     $sql = "UPDATE tblVaga SET
-                ocupado = 1   
+                ocupada = 0   
             WHERE id = {$id}";
 
     // Validação para verificar se o Script SQL está correto

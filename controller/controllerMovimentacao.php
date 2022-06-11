@@ -51,20 +51,62 @@ function registrarEntrada($dados) {
 
 }
 
-// $dados = array(
-//     "idVeiculo" => 1,
-//     "idVaga" => 2,
+/**
+ * Função responsével por registrar uma saida
+ * @author Thales Santos
+ * @param Int $id ID da movimentação 
+ * @return Array Dados atualizados ou mensagem de erro
+ */
+function registrarSaida($id) {
+    // Validação para verificar se o id informado é válido
+    if(is_numeric($id) && $id > 0) {
+        // Chamando a model que realiza o cálculo de quanto o cliente deverá pagar
+        $resposta = calculateOutput($id);
+        
+        // Validação para verificar o retorno do BD
+        if(is_array($resposta)) {
+            // Montando um array com os dados de acordo com o Model
+            $dados = array(
+                "id"        => $resposta['id'],    
+                "dataSaida" => $resposta['saida']['data'],
+                "horaSaida" => $resposta['saida']['horario'],
+                "valor"     => $resposta['valor']
+            );
 
-// );
+            // Atualizando o registro com a data/hora de saída e o valor que cliente pagou
+           $atualizou = updateMovimentacao($dados);
 
-// echo '<pre>';
-//     echo print_r(registrarEntrada($dados));
-// echo '</pre>';
+           if($atualizou) 
+                return $resposta;
+            else
+                return MESSAGES['error']['Update'][0];
+        }
+        elseif(is_bool($resposta) && $resposta == false)
+            return MESSAGES['error']['IDs'][1];
+    } else
+        return MESSAGES['error']['IDs'][0];
+}
 
+/**
+ * Função responsável por buscar uma movimentação pelo ID 
+ * @author Thales Santos
+ * @param Int $id ID da movimentação
+ * @return Array Dados da movimentação
+ */
+function buscaMovimentacao($id) {
+    // Validação para verificar se o id informado é válido
+    if(is_numeric($id) && $id > 0) {
+        // Chamando a model para buscar o registro
+        $resposta = selectByIdMovimentacao($id);
 
-
-
-
+        // Validando o retorno do BD 
+        if(is_array($resposta)) 
+            return $resposta;
+        elseif(is_bool($resposta) && $resposta == false) 
+            return false; 
+    } else
+        return MESSAGES['error']['IDs'][0];
+}
 
 
 

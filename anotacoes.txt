@@ -95,3 +95,43 @@ SET @horaEntrada := (select horaEntrada from tblMovimentacao where id = {$id});
                                 ON tblSetor.idPiso = tblPiso.id
                             
                         WHERE tblMovimentacao.id = {$id};		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Chamando a controller para calcular o valor que o cliente deverá pagar
+        $dados = registrarSaida($id);
+
+        // Verificando o retorno da controller
+        if(is_array($dados) && !isset($dados['idErro'])) {
+
+            // Criando um JSON com os dados atualizados
+            $dadosJSON = createJSON($dados);
+
+            // Retornando os dados para o cliente
+            return $response->write($dadosJSON)
+                            ->withHeader('Content-Type', 'application/json')
+                            ->withStatus(200);
+        } else  {
+            // Criando um JSON com a mensagem de erro
+            $dadosJSON = createJSON($dados);
+
+            return $response->write('{"message": "Não foi possível gerar saída.", "Erro":'. $dadosJSON . '}')
+                            ->withHeader('Content-Type', 'application/json')
+                            ->withStatus(400);
+        }                        

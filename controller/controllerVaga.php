@@ -7,9 +7,6 @@
  * Versão: 1.0
  */
 
-// Import do arquivo de Configurações
-require_once('../module/config.php');
-
 // Import do arquivo de Modelagem de Vaga
 require_once(SRC . 'model/bd/vaga.php');
 
@@ -152,7 +149,7 @@ function desocuparVaga($id) {
     // Validação para verificar se o id informado é válido
     if(is_numeric($id) && $id > 0) {
         // Validando o retorno  do BD
-        if(activateVaga($id))
+        if(vacateVaga($id))
             return true;
         else
             return MESSAGES['error']['Update'][0];

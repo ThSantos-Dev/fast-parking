@@ -7,8 +7,6 @@
  * Versão: 1.0
  */
 
-// Import do arquivo de Configurações
-require_once('../module/config.php');
 
 // Import do arquivo de Modelagem de Vaga
 require_once(SRC . 'model/bd/veiculo.php');
@@ -109,7 +107,7 @@ function listaVeiculosPorTipo($id) {
  */
 function listaVeiculosPorPlaca($placa) {
     // Validação para verificar se a placa informada é válida
-    if(!empty($placa) && strlen($placa) >= 7 && strlen($placa) < 10) {
+    if(!empty($placa) && strlen($placa) >= 7 && strlen($placa) <= 8) {
         // Chamando a model e passando a placa do veiculo
         $resposta = selectByPlaca($placa);
 

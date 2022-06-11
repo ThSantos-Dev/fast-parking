@@ -14,14 +14,11 @@ require_once('conexaoMySQL.php');
  * @author Thales Santos
  * @param Array $dados Informações do veículo
  *                      (placa, fabricante, modelo, Id: cor, tipo do veículo e cliente)
- * @return Bool True se foi inserido, senão, false. 
+ * @return Int ID do Veículo cadastrado ou false
  */
 function insertVeiculo($dados) {
     // Abrindo a conexão com o BD
     $conexao = conexaoMySQL();
-
-    // Variável de ambiente
-    $statusResposta = (bool) false;
 
     // Script SQL para inserir um Veículo
     $sql = "INSERT INTO tblVeiculo(
@@ -44,14 +41,14 @@ function insertVeiculo($dados) {
     // Validação para verificar se o Script SQL está correto
     if(mysqli_query($conexao, $sql)) {
         // Validação para verificar se houve a inserção
-        if(mysqli_affected_rows($conexao))
-            $statusResposta = true;
+        if(mysqli_affected_rows($conexao))  
+            $idVeiculo = mysqli_insert_id($conexao);
     }
 
     // Solicitando o funções da conexão
     fecharConexaoMySQL($conexao);
 
-    return $statusResposta;
+    return isset($idVeiculo) ? $idVeiculo : false;
 }
 
 /**
@@ -251,6 +248,7 @@ function selectByTipo($id)
             // Montando um array personalizado com os dados obtidos
             $arraydados[$contador] = array(
                 "id" => $resultado['id'],
+                "valor" => $resultado['valor'],
 
                 "cliente" => array(
                     "nome" => $resultado['cliente'],
@@ -361,7 +359,8 @@ function selectByPlaca($placa)
                     INNER JOIN tblPiso
                         ON tblSetor.idPiso = tblPiso.id
                     
-            WHERE tblVeiculo.placa LIKE '%{$placa}%'";
+            WHERE tblVeiculo.placa LIKE '%{$placa}%'
+                ORDER BY tblVeiculo.id DESC";
 
     $resposta = mysqli_query($conexao, $sql);
 
@@ -373,6 +372,7 @@ function selectByPlaca($placa)
             // Montando um array personalizado com os dados obtidos
             $arraydados[$contador] = array(
                 "id" => $resultado['id'],
+                "valor" => $resultado['valor'],
 
                 "cliente" => array(
                     "nome" => $resultado['cliente'],
@@ -413,6 +413,12 @@ function selectByPlaca($placa)
             $contador++;
         }
     }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando os dados encontradou ou false
+    return isset($arraydados) ? $arraydados : false;
 }
 
 /**
@@ -485,6 +491,7 @@ function selectAllVeiculos() {
             // Montando um array personalizado com os dados obtidos
             $arraydados[$contador] = array(
                 "id" => $resultado['id'],
+                "valor" => $resultado['valor'],
 
                 "cliente" => array(
                     "nome" => $resultado['cliente'],
@@ -601,11 +608,11 @@ function selectByEstacionadoAndPlaca($placa) {
     // Validação para verificar se houve dados encontrados
     if ($resposta) {
         // Convertendo os dados obtidos em  array
-        $contador = 0;
-        while ($resultado = mysqli_fetch_assoc($resposta)) {
+        if ($resultado = mysqli_fetch_assoc($resposta)) {
             // Montando um array personalizado com os dados obtidos
-            $arraydados[$contador] = array(
+            $arraydados = array(
                 "id" => $resultado['id'],
+                "valor" => $resultado['valor'],
 
                 "cliente" => array(
                     "nome" => $resultado['cliente'],
@@ -641,9 +648,6 @@ function selectByEstacionadoAndPlaca($placa) {
                     "horario" => $resultado['horaSaida']
                 )
             );
-
-            // Incrementando o contador para que não haja sobrescrita dos dados
-            $contador++;
         }
     }
 

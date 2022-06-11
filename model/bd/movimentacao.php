@@ -97,8 +97,8 @@ function updateMovimentacao($dados){
 
     // Script SQL para atualizar o registro da movimentação
     $sql = "UPDATE tblMovimentacao SET 
-                dataSaida = {$dados['dataSaida']},
-                horaSaida = {$dados['horaSaida']},
+                dataSaida = '{$dados['dataSaida']}',
+                horaSaida = '{$dados['horaSaida']}',
                 valor     = {$dados['valor']}
 
             WHERE id = {$dados['id']}";
@@ -254,10 +254,11 @@ function selectByIdMovimentacao($id){
     // Script SQL para buscar uma Movimentação pelo ID
     $sql = "SELECT 
                 tblMovimentacao.id,
-                tblMovimentacao.dataEntrada,
+                date_format(tblMovimentacao.dataEntrada, '%d/%m/%Y') as dataEntrada,
+                date_format(tblMovimentacao.dataSaida, '%d/%m/%Y') as dataSaida,
                 tblMovimentacao.horaEntrada,
-                tblMovimentacao.dataSaida,
                 tblMovimentacao.horaSaida,
+                tblMovimentacao.idVaga,
                 tblMovimentacao.valor,
 
                 tblVeiculo.placa,
@@ -329,6 +330,7 @@ function selectByIdMovimentacao($id){
                 ),
 
                 "vaga" => array(
+                    "id" => $resultado['idVaga'],
                     "codigo" => $resultado['codigo'],
                     "sigla" => $resultado['sigla'],
 
@@ -379,7 +381,7 @@ function calculateOutput($id) {
 				tblMovimentacao.horaEntrada,               
                 curtime() AS horaSaida,
                 datediff(curdate(), tblMovimentacao.dataEntrada) AS dias,
-                timediff(tblMovimentacao.horaEntrada, curtime()) AS horas,
+                timediff(curtime(), tblMovimentacao.horaEntrada) AS horas,
                                 
                 IF (
 					 datediff(curdate(), tblMovimentacao.dataEntrada) > 0,
@@ -444,11 +446,12 @@ function calculateOutput($id) {
     // Validação para verificar se houve retorno do BD
     if($resposta) {
         // Convertendo os dados obtidos em  array
-        $contador = 0;
-        while($resultado = mysqli_fetch_assoc($resposta)) {
+        if($resultado = mysqli_fetch_assoc($resposta)) {
             // Montando um array personalizado com os dados obtidos
-            $arraydados[$contador] = array(
+            $arraydados = array(
                 "id" => $resultado['id'],
+                "valor" => $resultado['valor'],
+
 
                 "cliente" => array(
                     "nome" => $resultado['cliente'],
@@ -468,13 +471,11 @@ function calculateOutput($id) {
                     "sigla" => $resultado['sigla'],
 
                     "localizacao" => array(
-                        "corredor" => $resultado['corredor'],
+                        "piso" => $resultado['piso'],
                         "setor" => $resultado['setor'],
-                        "piso" => $resultado['piso']
+                        "corredor" => $resultado['corredor']
                     )
                 ),
-
-                "valor" => $resultado['valor'],
 
                 "entrada" => array(
                     "data" => $resultado['dataEntrada'],
@@ -489,9 +490,6 @@ function calculateOutput($id) {
                     "horas" => $resultado['horas'],
                 )
             );
-
-        // Incrementando o contador para que não haja sobrescrita dos dados
-        $contador++;
         }
     }
 
@@ -503,4 +501,4 @@ function calculateOutput($id) {
     return isset($arraydados) ? $arraydados : false;
 }
 
-echo json_encode(calculateOutput(4));
+// echo "Calculo de saida: " . json_encode(calculateOutput(4));
