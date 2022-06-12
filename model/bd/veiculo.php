@@ -601,7 +601,8 @@ function selectByEstacionadoAndPlaca($placa) {
                         ON tblSetor.idPiso = tblPiso.id
                     
             WHERE tblMovimentacao.dataSaida is null
-                AND tblVeiculo.placa = '%{$placa}%'";
+                AND tblVeiculo.placa LIKE '%{$placa}%'
+                    ORDER BY tblVeiculo.id DESC";
 
     $resposta = mysqli_query($conexao, $sql);
 

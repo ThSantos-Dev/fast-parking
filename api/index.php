@@ -32,6 +32,9 @@
         case 'VEICULO':
             require_once('veiculoAPI/index.php');
             break;
+        case 'VAGA':
+            require_once('vagaAPI/index.php');
+            break;
     }
 
 

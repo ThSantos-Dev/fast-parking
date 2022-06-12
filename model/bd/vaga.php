@@ -70,9 +70,9 @@ function updateVaga($dados)
     // Script SQL para inserir nova Vaga
     $sql = "UPDATE tblVaga SET
                     idCorredor      = {$dados['idCorredor']},
-                    ativo           = {$dados['status']},
+                    ativo           = {$dados['ativo']},
                     idTipoVeiculo   = {$dados['idTipoVeiculo']},
-                    codigo          = {$dados['codigo']}
+                    codigo          = '{$dados['codigo']}'
                 WHERE id = {$dados['id']}";
 
     // Validação para verificar se o Script SQL está correto
@@ -234,7 +234,7 @@ function selectAllVagas()
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
                 tblVaga.codigo AS codigo,
-                tblVaga.ocupada AS status,
+                tblVaga.ocupada,
                 tblVaga.ativo,
        
                 tblTipoVeiculo.nome AS tipo,
@@ -271,8 +271,8 @@ function selectAllVagas()
 
                 "codigo" => $resultado['codigo'],
                 "sigla" => $resultado['sigla'],
-                "status" => $resultado['status'],
-                "ativo" => $resultado['ativo'],
+                "ocupada" => $resultado['ocupada'] == 0 ? false : true,
+                "ativo" => $resultado['ativo'] == 0 ? false : true,
                 "tipo" => $resultado['tipo'],
 
                 "localizacao" => array(
@@ -372,7 +372,7 @@ function selectByIdVaga($id)
 /**
  * Função responsável por listar as vagas por Status - Ocupadas / Livres
  * @author Thales Santos
- * @param Tinyint 0 se quiser vagas livres e 1 se as vagas ocupadas
+ * @param Bool False se quiser vagas livres e True se as vagas ocupadas
  * @return Array Dados encontrados
  */
 function selectByStatusVaga($livre)
@@ -385,7 +385,7 @@ function selectByStatusVaga($livre)
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
                 tblVaga.codigo,
-                tblVaga.ocupada AS status,
+                tblVaga.ocupada,
                 tblVaga.ativo,
                 
                 tblTipoVeiculo.nome AS tipo,
@@ -415,7 +415,7 @@ function selectByStatusVaga($livre)
                 AND tblCorredor.ativo = 1
                 AND tblSetor.ativo = 1
                 AND tblPiso.ativo = 1";
-
+    
     $resposta = mysqli_query($conexao, $sql);
 
     // Validação para verificar se houve retorno
@@ -429,7 +429,7 @@ function selectByStatusVaga($livre)
 
                 "codigo" => $resultado['codigo'],
                 "sigla" => $resultado['sigla'],
-                "status" => $resultado['status'],
+                "ocupada" => $resultado['ocupada'],
                 "ativo" => $resultado['ativo'],
                 "tipo" => $resultado['tipo'],
 
@@ -470,7 +470,7 @@ function selectByTipoVaga($id)
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
                 tblVaga.codigo,
-                tblVaga.ocupada AS status,
+                tblVaga.ocupada,
                 tblVaga.ativo,
 
                 tblTipoVeiculo.nome AS tipo,
@@ -508,8 +508,8 @@ function selectByTipoVaga($id)
 
                 "codigo"    => $resultado['codigo'],
                 "sigla"     => $resultado['sigla'],
-                "status"    => $resultado['status'],
-                "ativo"    => $resultado['ativo'],
+                "ocupada"    => $resultado['ocupada'] == 0 ? false : true,
+                "ativo"    => $resultado['ativo'] == 0 ? false : true,
                 "tipo"      => $resultado['tipo'],
 
                 "localizacao" => array(
@@ -548,7 +548,7 @@ function selectByStatusAndTipoVaga($dados) {
                 tblVaga.id,
                 tblVaga.idTipoVeiculo,
                 tblVaga.codigo,
-                tblVaga.ocupada AS status,
+                tblVaga.ocupada,
                 tblVaga.ativo,
                 
                 tblTipoVeiculo.nome AS tipo,
@@ -593,7 +593,7 @@ function selectByStatusAndTipoVaga($dados) {
 
                 "codigo"    => $resultado['codigo'],
                 "sigla"     => $resultado['sigla'],
-                "status"    => $resultado['status'],
+                "ocupada"   => $resultado['ocupada'],
                 "ativo"     => $resultado['ativo'],
                 "tipo"      => $resultado['tipo'],
 

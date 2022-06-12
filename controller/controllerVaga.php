@@ -19,18 +19,14 @@ require_once(SRC . 'model/bd/vaga.php');
 function inserirVaga($dados) {
     // Validação para verificar se os dados foram passados
     if(!empty($dados)) {
-        // Validação para verificar se os campos obrigatórios foram informados: código, IDs: corredor, status e tipo de veículo e se são válidos
-        if(
-            is_numeric($dados['idCorredor']) && $dados['idCorredor'] > 0 
-            && (is_numeric($dados['status']) && $dados['status'] == 1 || $dados['status'] == 0)
-            && is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0 
-            && is_string($dados['codigo'])
-        ){
+        // Validação para verificar se os campos obrigatórios foram informados: código, IDs: corredor, ativo e tipo de veículo e se são válidos
+        if(is_numeric($dados['idCorredor']) && $dados['idCorredor'] > 0 && is_bool($dados['ativo']) && is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0 && is_string($dados['codigo'])){
+
             // Montando um array com os dados de acordo com o Model
             $vaga = array(
                 "idCorredor"    => $dados['idCorredor'],
                 "ocupada"       => 0,
-                "ativo"         => $dados['status'],
+                "ativo"         => $dados['ativo'],
                 "idTipoVeiculo" => $dados['idTipoVeiculo'],
                 "codigo"        => $dados['codigo']
             );
@@ -41,7 +37,8 @@ function inserirVaga($dados) {
                 return true;
             else 
                 return MESSAGES['error']['Insert'][0];
-        }
+        } else 
+            return MESSAGES['error']['Data'][1];
     } else 
         return MESSAGES['error']['Data'][0];
 }
@@ -56,20 +53,18 @@ function inserirVaga($dados) {
 function atualizarVaga($dados) {
     // Validação para verificar se os dados foram passados
     if(!empty($dados)) {
-        // Validação para verificar se os campos obrigatórios foram informados: código, IDs: vaga, corredor, status e tipo de veículo e se são válidos
+        // Validação para verificar se os campos obrigatórios foram informados: código, IDs: vaga, corredor, ativo e tipo de veículo e se são válidos
         if(
-            is_numeric($dados['idVaga']) && $dados['idVaga'] > 0 &&
-            is_numeric($dados['idCorredor']) && $dados['idCorredor'] > 0 
-            && (is_bool($dados['status']) && $dados['status'] == 1 || $dados['status'] == 0) 
-            && is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0 
-            && is_string($dados['codigo'])
+            is_numeric($dados['id']) && $dados['id'] > 0 &&
+            is_numeric($dados['idCorredor']) && $dados['idCorredor'] > 0 &&
+            is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0 &&
+            is_string($dados['codigo']) && is_bool($dados['ativo']) && is_bool($dados['ocupada'])
         ){
-
             // Montando um array com os dados de acordo com o Model
             $vaga = array(
-                "id"            => $dados['idVaga'],
+                "id"            => $dados['id'],
                 "idCorredor"    => $dados['idCorredor'],
-                "ativo"         => $dados['status'],
+                "ativo"         => $dados['ativo'],
                 "ocupada"       => $dados['ocupada'],
                 "idTipoVeiculo" => $dados['idTipoVeiculo'],
                 "codigo"        => $dados['codigo']
@@ -81,6 +76,8 @@ function atualizarVaga($dados) {
                 return true;
             else 
                 return MESSAGES['error']['Update'][0];
+        }else {
+            return MESSAGES['error']['Data'][0];
         }
     } else 
         return MESSAGES['error']['Data'][0];
@@ -206,7 +203,7 @@ function listaVagas() {
  */
 function listaVagasPorStatus($status) {
     // Validação para verificar se o Status é válido
-    if(is_numeric($status) && $status >= 0) {
+    if(is_bool($status) || is_numeric($status)) {
         // Chamando a função da Model que faz a listagem por status
         $resposta = selectByStatusVaga($status);
         
@@ -223,14 +220,14 @@ function listaVagasPorStatus($status) {
 /**
  * Função responsável por listar as vagas por Tipo de Veículo
  * @author Thales Santos
- * @param Int $idTipoVeiculo Tipo do veículo desejado
+ * @param Int $id Tipo do veículo desejado
  * @return Array Dados encontrados ou com uma Mensagem de erro
  */
-function listaVagasPorTipoVeiculo($idTipoVeiculo) {
+function listaVagasPorTipoVeiculo($id) {
         // Validação para verificar se o ID tipo veiculo é válido
-        if(is_numeric($idTipoVeiculo) && $idTipoVeiculo > 0) {
+        if(is_numeric($id) && $id > 0) {
             // Chamando a função da Model que faz a listagem por status
-            $resposta = selectByTipoVaga($idTipoVeiculo);
+            $resposta = selectByTipoVaga($id);
             
             // Validando o retorno do BD
             if(is_array($resposta) && count($resposta) > 0)
@@ -252,8 +249,11 @@ function listaVagasPorStatusETipoVeiculo($dados) {
     // Validação para verificar se o Status (Livres = 1, Ocupadas = 0) e Id Tipo Veiculo informado é um ID válido
     if(
         is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0
-        && is_numeric($dados['ocupada']) && $dados['ocupada'] > 0
-    ) {
+        && is_bool($dados['ocupada']) || is_numeric($dados['ocupada'])
+    ) { 
+        // Verificando se ocupada é um booleano e false, alterando seu valor para 1 ou 0
+        $dados['ocupada'] == false || $dados['ocupada'] == 0 ? $dados['ocupada'] = 0 : $dados['ocupada'] = 1;
+
         // Chamando a função da Model que faz a listagem por status
         $resposta = selectByStatusAndTipoVaga($dados);
         

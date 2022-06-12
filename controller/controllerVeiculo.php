@@ -62,6 +62,26 @@ function listaVeiculos() {
 }
 
 /**
+ * Função responsável por listar todos os veiculos que tiveram a saida registrada e suas movimentações
+ * @author Thales Santos
+ * @param Void
+ * @return Array Dados encontrados ou uma mensagem de erro
+ */
+function listaVeiculosSaida() {
+    // Chamando a model que lista os veiculos
+    $resposta = selectBySaida();
+
+    // Validação para verificar o retorno do BD
+    if(is_array($resposta)) 
+        return $resposta;
+    elseif(is_bool($resposta) && $resposta == false)
+        return MESSAGES['error']['Select'][0];
+}
+
+
+
+
+/**
  * Função responsável por listar todos os veiculos estacionados e suas movimentações
  * @author Thales Santos
  * @param Void
