@@ -244,6 +244,7 @@ function listaVagasPorTipoVeiculo($id) {
  * Função responsável por listar as vagas por Tipo de veículo e status (livre, ocupada)
  * @author Thales Santos
  * @param Array $dados Informações da busca: id do tipo de veículo e status (livres = 0 e Ocupadas = 1)
+ * @param Array $dados Dados encontrados
  */
 function listaVagasPorStatusETipoVeiculo($dados) {
     // Validação para verificar se o Status (Livres = 1, Ocupadas = 0) e Id Tipo Veiculo informado é um ID válido
@@ -266,4 +267,72 @@ function listaVagasPorStatusETipoVeiculo($dados) {
     } else 
         return MESSAGES['error']['IDs'][0];
 }
+
+/**
+ * Função reponsável por retornar a quantidade de vagas do estacionamento
+ * @author Thales Santos
+ * @param Void
+ * @return Int Quantidade de vagas
+ */
+function quantidadeVagas() {
+    // Chamando a model responsável por retornar a quantidade de vagas encontradas
+    $quantidade = countVagas();
+
+    // Validação para verificar se houve uma quantidade retornada
+    if(is_numeric($quantidade))
+        return $quantidade;
+    else 
+        return MESSAGES['error']['Select'][0];
+
+}
+
+
+/**
+ * Função responsável por retornar a quantidade de vagas livres ou ocupadas
+ * @author Thales Santos
+ * @param Tinyint $status 0 para livres e 1 para ocupadas
+ * @return Int Quantidade de vagas
+ */
+function quantidadeVagasPorStatus($status) {
+    // Validação para verificar se o $status informado é válido
+    if(is_numeric($status) && ($status == 0 || $status == 1)){
+        // Chamando a model responsável por retornar a quantidade de vagas encontradas
+        $quantidade = countVagasStatus($status);
+
+        // Validação para verificar se houve uma quantidade retornada
+        if(is_numeric($quantidade))
+            return $quantidade;
+        else 
+            return MESSAGES['error']['Select'][0];
+
+    } else
+        return MESSAGES['error']['Data'][1];
+}
+
+/**
+ * Função responsável por retornar a quantidade de vagas livres ou oucpadas de acordo com o tipo de veículo
+ * @author Thales Santos
+ * @param Array $dados Dados da busca: status (0 livres, 1 oucpadas) e id do tipo de veículo desejado
+ * @return Int Quantidade de vagas
+ */
+function quantidadeVagasPorStatusETipoVeiculo($dados) {
+    // Validação para verificar se foram passados dados para a pesquisa
+    if(!empty($dados)){
+        // Validação para verificar se os campos obrigatórios foram preenchidos
+        if(is_numeric($dados['status']) && ($dados['status'] == 0 || $dados['status'] == 1) && is_numeric($dados['idTipoVeiculo']) && $dados['idTipoVeiculo'] > 0){
+            // Chamando a model responsável por retornar a quantidade de vagas encontradas
+            $quantidade = countVagasStatusAndTipo($dados);
+
+            // Validação para verificar se houve uma quantidade retornada
+            if(is_numeric($quantidade))
+                return $quantidade;
+            else 
+                return MESSAGES['error']['Select'][0];
+        } else
+            return MESSAGES['error']['Data'][1];
+    } else 
+        return MESSAGES['error']['Data'][0];
+}
+
+
 ?>

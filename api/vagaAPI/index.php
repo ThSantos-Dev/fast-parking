@@ -319,8 +319,45 @@ $app->get('/vaga/livres/tipo/{id}', function($request, $response, $args){
                         ->withStatus(400);
 });
 
+/**
+ * EndPoint: Responsável por retornar a quantidade de vagas por status e tipos
+ * @author Thales Santos
+ * @param Void
+ * @return JSON Dados encontrados
+ */
+$app->get('/vaga/quantidade', function($request, $response, $args){
+    // Montando um array com a quantidade de vagas
+    $dados = array(
+        "total" => quantidadeVagas(),
 
+        "totalLivres" => quantidadeVagasPorStatus(0),
+        "totalOcupadas" => quantidadeVagasPorStatus(1),
 
+        "tipoVeiculo" => array(
+            "carro" => array(
+                "livres" => quantidadeVagasPorStatusETipoVeiculo(["status" => 0, "idTipoVeiculo" => 8]),
+                "ocupadas" => quantidadeVagasPorStatusETipoVeiculo(["status" => 1, "idTipoVeiculo" => 8])
+            ),
+            "moto" => array(
+                "livres" => quantidadeVagasPorStatusETipoVeiculo(["status" => 0, "idTipoVeiculo" => 7]),
+                "ocupadas" => quantidadeVagasPorStatusETipoVeiculo(["status" => 1, "idTipoVeiculo" => 7])
+            )
+        )
+    );
+
+    /**
+     * FALTA GERAR A QUANTIDADE DE VAGAS POR TIPO DE VEÍCULO DINAMICAMENTE
+     *              SELECTALLTIPOVEICULO - FUNÇÃO QUE ESTÁ COM A VIVIAN
+     */
+
+    //  Criando um JSON com os dados gerados
+    $dadosJSON = createJSON($dados);
+
+    //  Retornando os dados gerados para o cliente
+    return $response->write($dadosJSON)
+                    ->withHeader('Content-Type', 'application/json')
+                    ->withStatus(200);
+});
 
 
 

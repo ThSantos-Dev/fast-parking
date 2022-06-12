@@ -617,3 +617,102 @@ function selectByStatusAndTipoVaga($dados) {
     return isset($arrayDados) ? $arrayDados : false;
 
 }
+
+/**
+ * Função responsável por retornar a quantidade total de vagas
+ * @author Thales Santos
+ * @param Void
+ * @return Int Quantidade de vagas ou false
+ */
+function countVagas() {
+    // Abrindo a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Script SQL para contar todas as vagas
+    $sql = "SELECT COUNT(*) AS quantidade
+                FROM tblVaga
+            WHERE tblVaga.ativo = 1";
+
+    // Executando o Script no BD
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validando p retorno do BD
+    if($resposta) {
+        // Armazenando a quantidade em uma variável
+        if($resultado = mysqli_fetch_assoc($resposta))
+            $quantidade = $resultado['quantidade'];
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando a quantidade de vagas ou false
+    return isset($quantidade) ? $quantidade : false;
+}
+
+/**
+ * Função responsável por retornar a quantidade de vagas Ocupadas ou Livres
+ * @author Thales Santos
+ * @param Tinyint 0 para livres e 1 para ocupadas
+ * @return Int Quantidade de vagas ou false
+ */
+function countVagasStatus($status) {
+    // Abrindo a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Script SQL para contar todas as vagas livres ou ocupadas
+    $sql = "SELECT COUNT(*) AS quantidade
+                FROM tblVaga
+            WHERE tblVaga.ativo = 1
+                AND tblVaga.ocupada = {$status}";
+
+    // Executando o Script no BD
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validando p retorno do BD
+    if($resposta) {
+        // Armazenando a quantidade em uma variável
+        if($resultado = mysqli_fetch_assoc($resposta))
+            $quantidade = $resultado['quantidade'];
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando a quantidade de vagas ou false
+    return isset($quantidade) ? $quantidade : false;
+}
+
+/**
+ * Função responsável por retornar a quantidade de vagas de acordo com status (ocupadas ou livres) e tipo de veículo
+ * @author Thales Santos
+ * @param Array $dados Status desejado (0 livres, 1 ocupadas) e tipo de veículo (ID do Tipo de veículo desejado)
+ * @return Int Quantidade de vagas ou false
+ */
+function countVagasStatusAndTipo($dados) {
+    // Abrindo a conexão com o BD
+    $conexao = conexaoMySQL();
+
+    // Script SQL para contar todas as vagas livres ou ocupadas de acordo com o tipo de veículo
+    $sql = "SELECT COUNT(*) AS quantidade
+                FROM tblVaga
+            WHERE tblVaga.ativo = 1
+                AND tblVaga.ocupada = {$dados['status']}
+                AND tblVaga.idTipoVeiculo = {$dados['idTipoVeiculo']}";
+
+    // Executando o Script no BD
+    $resposta = mysqli_query($conexao, $sql);
+
+    // Validando p retorno do BD
+    if($resposta) {
+        // Armazenando a quantidade em uma variável
+        if($resultado = mysqli_fetch_assoc($resposta))
+            $quantidade = $resultado['quantidade'];
+    }
+
+    // Solicitando o fechamento da conexão com o BD
+    fecharConexaoMySQL($conexao);
+
+    // Retornando a quantidade de vagas ou false
+    return isset($quantidade) ? $quantidade : false;
+}
