@@ -69,12 +69,12 @@ function updatePreco($dados) {
                 primeiraHora    = {$dados['primeiraHora']},
                 demaisHoras     = {$dados['demaisHoras']},
                 idTipoVeiculo   = {$dados['idTipoVeiculo']}
-            WHERE id = '{$dados['id']}'";
+            WHERE id = {$dados['id']}";
 
    // Validação para verificar se o Script SQL está correto
    if(mysqli_query($conexao, $sql)){
        // Validação para verificar se houve a atualização 
-       if(mysqli_affected_rows($conexao))
+       if(mysqli_affected_rows($conexao)) 
            $statusResposta = true;
    }
 

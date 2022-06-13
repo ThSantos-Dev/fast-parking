@@ -46,7 +46,7 @@ $app->post('/vaga', function($request, $response, $args) {
                 // Retornando uma mensagem de erro para o cliente
                 return $response->write('{"message": "Não foi possível criar a vaga", "Erro": '. $dadosJSON .'}')
                                 ->withHeader('Content-Type', 'application/json')
-                                ->withStatus(201);
+                                ->withStatus(400);
             }
         }else 
             return $response->write('{ "message": "Não há dados para criar a vaga."}')
@@ -64,41 +64,63 @@ $app->post('/vaga', function($request, $response, $args) {
  * @param JSON Dados da vaga
  * @return StatusCode 201 para inserida ou 400 para erro
  */
-$app->put('/vaga', function($request, $response, $args) {
-    // Regatando o cabeçalho para saber o tipo de conteúdo que foi enviado é JSON
-    $contentTypeHeader = $request->getHeaderLine('Content-Type');
+$app->put('/vaga/{id}', function($request, $response, $args) {
+    // Validação para verificar se o ID passado é válido
+    if(is_numeric($args['id']) && $args['id'] > 0){
+        // Recuperando o ID informado
+        $id = $args['id'];
 
-    // Validação para verificar se o conteúdo é JSON
-    if($contentTypeHeader == 'application/json') {
-        //  Convertendo o corpo da requisição e transformando em um Array 
-        $dadosBody = $request->getParsedBody();
+        // Regatando o cabeçalho para saber o tipo de conteúdo que foi enviado é JSON
+        $contentTypeHeader = $request->getHeaderLine('Content-Type');
 
-        // Validação para verificar se há dados para atualizar a vaga
-        if(!empty($dadosBody)) {
-            // Chamando a função da controller para criar a vaga
-            $resposta = atualizarVaga($dadosBody);
+        // Validação para verificar se o conteúdo é JSON
+        if($contentTypeHeader == 'application/json') {
+            //  Convertendo o corpo da requisição e transformando em um Array 
+            $dadosBody = $request->getParsedBody();
 
-            // Validação para verificar se o registro foi atualizado
-            if(is_bool($resposta) && $resposta == true) {
-                // Retornando uma mensagem de sucesso para o cliente
-                return $response->write('{"message": "Vaga atualizada com sucesso!"}')
+            // Validação para verificar se há dados para atualizar a vaga
+            if(!empty($dadosBody)) {
+                // Montando um array com os dados
+                $vaga = array(
+                    "id" => $id,
+                    "idCorredor" => $dadosBody['idCorredor'],
+                    "idTipoVeiculo" => $dadosBody['idTipoVeiculo'],
+                    
+                    "codigo" => $dadosBody['codigo'],
+                    "ativo" => $dadosBody['ativo'],
+                    "ocupada" => $dadosBody['ocupada']
+                );
+
+                // Chamando a função da controller para criar a vaga
+                $resposta = atualizarVaga($vaga);
+
+                // Validação para verificar se o registro foi atualizado
+                if(is_bool($resposta) && $resposta == true) {
+                    // Retornando uma mensagem de sucesso para o cliente
+                    return $response->write('{"message": "Vaga atualizada com sucesso!"}')
+                                    ->withHeader('Content-Type', 'application/json')
+                                    ->withStatus(200);
+                }elseif(is_array($resposta) && isset($resposta['idErro'])) {
+                    // Criando um JSON com a mensagem de erro
+                    $dadosJSON = createJSON($resposta);
+
+                    // Retornando uma mensagem de erro para o cliente
+                    return $response->write('{"message": "Não foi possível atualizar a vaga", "Erro": '. $dadosJSON .'}')
+                                    ->withHeader('Content-Type', 'application/json')
+                                    ->withStatus(400);
+                }
+            }else 
+                return $response->write('{ "message": "Não há dados para atualizar a vaga."}')
                                 ->withHeader('Content-Type', 'application/json')
-                                ->withStatus(201);
-            }elseif(is_array($resposta) && isset($resposta['idErro'])) {
-                // Criando um JSON com a mensagem de erro
-                $dadosJSON = createJSON($resposta);
-
-                // Retornando uma mensagem de erro para o cliente
-                return $response->write('{"message": "Não foi possível criar a vaga", "Erro": '. $dadosJSON .'}')
-                                ->withHeader('Content-Type', 'application/json')
-                                ->withStatus(201);
-            }
-        }else 
-            return $response->write('{ "message": "Não há dados para criar a vaga."}')
+                                ->withStatus(400);
+        }else
+            return $response->write('{ "message": "O formato do Content-Type não é válido para essa requisição."}')
                             ->withHeader('Content-Type', 'application/json')
                             ->withStatus(400);
-    }else
-        return $response->write('{ "message": "O formato do Content-Type não é válido para essa requisição."}')
+
+
+    } else 
+        return $response->write('{ "message": "É obrigatório informar um ID válido."}')
                         ->withHeader('Content-Type', 'application/json')
                         ->withStatus(400);
 });

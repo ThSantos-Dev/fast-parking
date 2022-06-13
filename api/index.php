@@ -35,6 +35,9 @@
         case 'VAGA':
             require_once('vagaAPI/index.php');
             break;
+        case 'PRECO':
+            require_once('precoAPI/index.php');
+            break;
     }
 
 

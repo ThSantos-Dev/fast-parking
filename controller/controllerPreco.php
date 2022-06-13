@@ -28,7 +28,7 @@ function inserirPreco($dados) {
 
             // Validação para verificar o retorno da model
             if($resposta) 
-                return MESSAGES['success']['Insert'][0];
+                return true;
             else 
                 return MESSAGES['error']['Insert'][0];
         } else 
@@ -50,7 +50,7 @@ function atualizarPreco($dados) {
             // Chamando a model e passando os dados para inserção de Preço
             // Validação para verificar o retorno da model
             if(updatePreco($dados)) 
-                return MESSAGES['success']['Update'][0];
+                return true;
             else 
                 return MESSAGES['error']['Update'][0];
         } else 
