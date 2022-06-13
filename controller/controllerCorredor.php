@@ -162,7 +162,7 @@ function buscaCorredor($id) {
         if(is_array($resposta)) 
             return $resposta;
         else
-            return MESSAGES['error']['Data'][0];
+            return MESSAGES['error']['IDs'][0];
     }
 }
 
