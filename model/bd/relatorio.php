@@ -62,7 +62,7 @@ function monthReport($data) {
     // Script SQL para obter o rendimento gerado por determinada data
     $sql = "SELECT 
                 FORMAT(SUM(tblMovimentacao.valor), 2, 'de_DE') AS rendimento,
-                DATE_FORMAT('{$data['ano']}-{$data['mes']}-00', '%m/%Y') AS mes
+                DATE_FORMAT('{$data['ano']}-{$data['mes']}-00', '%m/%Y') AS data
 
                 FROM tblMovimentacao
         
@@ -77,7 +77,7 @@ function monthReport($data) {
         if($resultado = mysqli_fetch_assoc($resposta))
             // Montando um Array com os dados encontrados
             $arrayDados = array(
-                "mes" => $resultado['mes'],
+                "data" => $resultado['data'],
                 "rendimento" => $resultado['rendimento']
             );
     }
@@ -93,8 +93,8 @@ function monthReport($data) {
 /**
  * Função responsável por gerar o relatório de rendimentos Anual
  * @author Thales Santos
- * @param Date $data Data desejada 
- * @return Array Rendimentos da data
+ * @param Date $ano ano desejado 
+ * @return Array Rendimentos do ano 
  */
 function yearReport($ano) {
     // Abrindo a conexão com o BD
@@ -103,7 +103,7 @@ function yearReport($ano) {
     // Script SQL para obter o rendimento gerado por determinada data
     $sql = "SELECT 
 	            FORMAT(SUM(tblMovimentacao.valor), 2, 'de_DE') AS rendimento,
-                '{$ano}' AS ano
+                '{$ano}' AS data
 
 	            FROM tblMovimentacao
 		
@@ -145,7 +145,8 @@ function getDays() {
 
     
                 FROM tblmovimentacao
-            WHERE tblmovimentacao.valor IS NOT NULL";
+            WHERE tblmovimentacao.valor IS NOT NULL
+                ORDER BY tblmovimentacao.dataSaida DESC";
 
     
     $resposta = mysqli_query($conexao, $sql);
@@ -184,10 +185,11 @@ function getMonths() {
 
     // Script SQL para listar os dias que trouxe rendimentos
     $sql = "SELECT 
-                DISTINCT(MONTH(tblmovimentacao.dataSaida)) AS mes
+                DISTINCT(DATE_FORMAT(tblMovimentacao.dataSaida, '%m/%Y')) AS mes
 
                 FROM tblmovimentacao
-            WHERE tblmovimentacao.valor IS NOT NULL";
+            WHERE tblmovimentacao.valor IS NOT NULL
+                ORDER BY tblmovimentacao.dataSaida DESC";
 
     
     $resposta = mysqli_query($conexao, $sql);
@@ -229,9 +231,10 @@ function getYears() {
                 DISTINCT(YEAR(tblmovimentacao.dataSaida)) AS ano
 
                 FROM tblmovimentacao
-            WHERE tblmovimentacao.valor IS NOT NULL";
+            WHERE tblmovimentacao.valor IS NOT NULL
+                ORDER BY tblmovimentacao.dataSaida DESC";
 
-    $resposta = conexaoMySQL($conexao, $sql);
+    $resposta = mysqli_query($conexao, $sql);
 
     // Validando o retorno do BD
     if($resposta) {

@@ -38,6 +38,9 @@
         case 'PRECO':
             require_once('precoAPI/index.php');
             break;
+        case 'RELATORIO':
+            require_once('relatorioAPI/index.php');
+            break;
     }
 
 
