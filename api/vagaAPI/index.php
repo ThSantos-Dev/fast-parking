@@ -267,7 +267,7 @@ $app->get('/vaga/ocupadas/tipo/{id}', function($request, $response, $args){
         // Montando um Array com dados de busca
         $dados = array(
             "idTipoVeiculo" => $args['id'],
-            "ocupada" => 0
+            "ocupada" => 1
         );
 
         // Chamando a função da controller para listar as vagas ocupadas de um tipo especifíco de Veiculo
@@ -310,7 +310,7 @@ $app->get('/vaga/livres/tipo/{id}', function($request, $response, $args){
         // Montando um Array com dados de busca
         $dados = array(
             "idTipoVeiculo" => $args['id'],
-            "ocupada" => 1
+            "ocupada" => 0
         );
 
         // Chamando a função da controller para listar as vagas livres de um tipo especifíco de Veiculo

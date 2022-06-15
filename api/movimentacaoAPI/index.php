@@ -97,10 +97,7 @@ $app->post('/movimentacao/entrada', function ($request, $response, $args) {
                                         ->withStatus(400);
                     }
                 } else {
-                    // Retornando uma mensagem de erro para o cliente
-                    $dadosJSON = createJSON($idVeiculo);
-
-                    return $response->write('{"message": "Erro ao cadastrar o veículo.", "Erro": ' . $dadosJSON .'}')
+                    return $response->write('{"message": "Erro ao cadastrar o veículo."}')
                                     ->withHeader('Content-Type', 'application/json')
                                     ->withStatus(400);
                 }

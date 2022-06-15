@@ -4,35 +4,12 @@
  * @date 14/06/2022
  */
 
-'use strict'
+ 'use strict'
 
-// URL BASE DA API
-const BASE_API = 'http://localhost/senai/fastparking/api'
+ // URL BASE DA API
+ import { BASE_API } from './config.js'
 
-/*_________     Vagas    __________ */
-
-/**
- * Função responsável por retornar as vagas livres para seleção
- * @author Thales Santos
- * @param {Void}
- * @return {JSON}
- */
-const getVagas = async () => {
-    // Realizando requisição para a API
-    const response = await fetch(`${BASE_API}/vaga/livres`)
-
-    // Resgatando o JSON da requisição
-    const data = await response.json()
-
-    console.log(data)
-
-    // Retornando os dados
-    return data
-}
-
-
-
-/*_________     Entrada    __________ */
+ /*_________     Entrada    __________ */
 
 /**
  * Função responsável por registrar a entrada 
@@ -53,14 +30,17 @@ const saveEntry = async (data) => {
     // Realizando a requisição
     const response = await fetch(`${BASE_API}/movimentacao/entrada`, options)
 
+    console.log(response)
+
     // Pegando os dados retornados pela API 
     const teste = await response.json()
-
     console.log(teste)
+
+    return teste
 
 }
 
 
 
 // Exports
-export {getVagas, saveEntry}
+export {saveEntry}
